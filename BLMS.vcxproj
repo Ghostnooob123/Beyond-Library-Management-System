@@ -142,10 +142,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BLMS.cpp" />
-    <ClCompile Include="LibraryEngine.cpp" />
+    <ClCompile Include="Source\LibraryEngine.cpp" />
+    <ClCompile Include="Source\LibraryGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LibraryEngine.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\LibraryEngine.h" />
+    <ClInclude Include="Source\LibraryGUI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BLMS.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\HeroZ\Downloads\Books_logo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

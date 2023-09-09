@@ -12,6 +12,7 @@ int main()
 
 		library->render();
 	}
+	delete library;
 
 	return EXIT_SUCCESS;
 }
