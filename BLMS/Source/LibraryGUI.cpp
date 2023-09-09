@@ -319,17 +319,15 @@ void LibraryGUI::renderBLMS_BooksPanel(sf::RenderTarget* target, std::unordered_
 
 	for (this->book = 0; this->book < books_Storage.size(); ++this->book)
 	{
-		/*if (this->book >= 28.0f)
+		if (this->book >= 28.0f)
 		{
 			this->pollEvent();
-		}*/
+		}
 
 		checkBox.setOutlineThickness(2.5f);
 		checkBox.setSize(sf::Vector2f(40.0f, 40.0f));
 
 		checkBoxes.push_back(checkBox);
-
-		this->pollEvent();
 
 		//Adjust the book's position using the scrollPosition
 		books_Storage[book].setPosition(sf::Vector2f(
