@@ -486,7 +486,6 @@ void LibraryGUI::renderBLMS_BooksPanel(sf::RenderTarget* target, std::unordered_
 				else
 				{
 					inputFileColor.close();
-					return; // Exit early if the color is not recognized.
 				}
 
 				std::vector<std::string> updatedLines; // Store updated lines in memory.
