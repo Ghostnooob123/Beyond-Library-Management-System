@@ -50,6 +50,15 @@ void LibraryEngine::update()
 	{
 		//Update the books panel if requested
 		this->libraryGUI->updateBLMS_BooksPanel();
+		this->libraryGUI->updateBLMS_FilterButton(this->mousePosView, this->centerX, this->centerY);
+		if (this->libraryGUI->requestShowFilters())
+		{
+			this->libraryGUI->updateBLMS_Filters(this->mousePosView);
+		}
+		if (this->libraryGUI->requestCheckBoxColor())
+		{
+			this->libraryGUI->updateBLMS_CheckboxPanel(this->mousePosView);
+		}
 	}
 	if (this->libraryGUI->requestExit())
 	{
@@ -82,6 +91,15 @@ void LibraryEngine::render()
 		{
 			//Render the books panel if requested
 			this->libraryGUI->renderBLMS_BooksPanel(this->window, this->books_Storage, this->mousePosView, this->checkBoxes, this->checkBox);
+			this->libraryGUI->renderBLMS_FilterButton(this->window);
+			if (this->libraryGUI->requestShowFilters())
+			{
+				this->libraryGUI->renderBLMS_Filters(this->window);
+			}
+			if (this->libraryGUI->requestCheckBoxColor())
+			{
+				this->libraryGUI->renderBLMS_CheckboxPanel(this->window);
+			}
 		}
 	}
 	else

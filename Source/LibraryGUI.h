@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <string>
 #include <vector>
 #include <fstream>
 #include <unordered_map>
@@ -25,6 +26,8 @@ public:
 	const void changeRequestOpenLibrary();
 	const bool requestAddBook() const;
 	const void changeRequestAddBook();
+	const bool requestCheckBoxColor() const;
+	const bool requestShowFilters() const;
 	const sf::Text userInput() const;
 	const sf::Text printBook() const;
 
@@ -40,6 +43,13 @@ public:
 	   //Exit button Update & Render methods
 	void updateBLMS_ButtonExit(sf::Vector2f& mousePosView, float& centerX, float& centerY);
 	void renderBLMS_ButtonExit(sf::RenderTarget* target);
+
+	   //Filter button Update & Render methods
+	void updateBLMS_FilterButton(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void renderBLMS_FilterButton(sf::RenderTarget* target);
+
+	void updateBLMS_Filters(sf::Vector2f& mousePosView);
+	void renderBLMS_Filters(sf::RenderTarget* target);
 
 	   //Books panel Update & Render methods
 	void updateBLMS_BooksPanel();
@@ -62,15 +72,18 @@ private:
 	sf::ConvexShape openLibraryButton;
 	sf::ConvexShape addBookButton;
 	sf::ConvexShape exitButton;
+	sf::ConvexShape filterButton;
 	     //Buttons UI's 
 	sf::Font mainFont; //Main button font for the application
 	sf::Text UI_OpenLibraryButton;
 	sf::Text UI_AddBookButton;
 	sf::Text UI_exitButton;
+	sf::Text UI_filterButton;
 	     //Buttons highlighters
 	sf::ConvexShape highLighter_ButtonOpenLibrary;
 	sf::ConvexShape highLighter_ButtonAddBook;
 	sf::ConvexShape highLighter_ButtonExit;
+	sf::ConvexShape highLighter_ButtonFilter;
 	  //List of books Panel
 	sf::RectangleShape booksPanel;
 	sf::View booksView;
@@ -82,21 +95,26 @@ private:
 	sf::Font booksFont;
 	sf::ConvexShape addBookBar;
 	sf::Text userInputText;
-	//Checkbox panel
+	//Filter options
+		//Checkbox panel
+	sf::RectangleShape checkFilter;
+	sf::Text UI_checkFilter;
 	sf::RectangleShape checkboxPanel;
 	std::vector<sf::RectangleShape> checks;
+	sf::CircleShape closeCheckboxPanel;
 
 	  //App engine logic
 	bool isLibraryOpen;
 	bool requestToClose;
 	bool addBook;
+	float moveDown;
 	float scrollPosition;
+	float scrollIncrement;
 	unsigned int book;
 	sf::Color colorChanger;
 	bool colorPicked;
 	bool isColorPicker;
-	unsigned selectedBook;
-	bool mouseClicked;
+	bool showFilters;
 
 	//Private functions
 	void initVariables();
@@ -104,6 +122,7 @@ private:
 	void initBLMS_ButtonOpenLibrary();
 	void initBLMS_ButtonAddBook();
 	void initBLMS_ButtonExit();
+	void initBLMS_ButtonFilter();
 
 	void initBLMS_BooksPanel();
 	void initBLMS_BooksView();
@@ -112,6 +131,8 @@ private:
 	void initBLMS_addNewBookBar();
 	void initBLMS_userInputText();
 	void initBLMS_printBookText();
+
+	void initBLMS_Filters();
 	void initBLMS_CheckboxPanel();
 };
 #endif // !LIBRARY_GUI_H

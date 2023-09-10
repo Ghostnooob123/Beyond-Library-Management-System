@@ -141,7 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BLMS.cpp" />
+    <ClCompile Include="Source\BLMS.cpp" />
     <ClCompile Include="Source\LibraryEngine.cpp" />
     <ClCompile Include="Source\LibraryGUI.cpp" />
   </ItemGroup>

@@ -13,6 +13,8 @@ LibraryGUI::LibraryGUI()
 	this->initBLMS_ButtonOpenLibrary();
 	this->initBLMS_ButtonAddBook();
 	this->initBLMS_ButtonExit();
+	this->initBLMS_ButtonFilter();
+
 	this->initBLMS_BooksPanel();
 	this->initBLMS_BooksView();
 	this->initBLMS_YourListPanel();
@@ -20,6 +22,8 @@ LibraryGUI::LibraryGUI()
 	this->initBLMS_addNewBookBar();
 	this->initBLMS_userInputText();
 	this->initBLMS_printBookText();
+
+	this->initBLMS_Filters();
 	this->initBLMS_CheckboxPanel();
 }
 LibraryGUI::~LibraryGUI()
@@ -59,6 +63,14 @@ const bool LibraryGUI::requestAddBook() const
 const void LibraryGUI::changeRequestAddBook()
 {
 	this->addBook = false;
+}
+const bool LibraryGUI::requestCheckBoxColor() const
+{
+	return this->isColorPicker;
+}
+const bool LibraryGUI::requestShowFilters() const
+{
+	return this->showFilters;
 }
 const sf::Text LibraryGUI::userInput() const
 {
@@ -139,7 +151,7 @@ void LibraryGUI::renderBLMS_ButtonOpenLibrary(sf::RenderTarget* target)
 	target->draw(this->highLighter_ButtonOpenLibrary);
 }
 
-//Add book Update & Render methods
+   //Add book Update & Render methods
 void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY)
 {
 	/*
@@ -191,6 +203,7 @@ void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& cen
 	if (this->addBookButton.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		this->addBook = true;
+		this->showFilters = false;
 	}
 
 	if (this->addBook)
@@ -222,7 +235,7 @@ void LibraryGUI::renderBLMS_ButtonAddBook(sf::RenderTarget* target, std::unorder
 	}
 }
 
-//Exit button Update & Render methods
+   //Exit button Update & Render methods
 void LibraryGUI::updateBLMS_ButtonExit(sf::Vector2f& mousePosView, float& centerX, float& centerY)
 {
 	/*
@@ -288,14 +301,80 @@ void LibraryGUI::renderBLMS_ButtonExit(sf::RenderTarget* target)
 	target->draw(this->highLighter_ButtonExit);
 }
 
-//Books panel Update & Render methods
+   //Filter button Update & Render methods
+void LibraryGUI::updateBLMS_FilterButton(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+{
+	/*
+		  @return void
+		  - Update Filter button.
+		  - Set positions depending on mouse event.
+		  - Set button's highlighter.
+		  - This button shows library filters.
+	*/
+
+	float highlighterWidth = 10.0f;
+	float highlighterHeight = 65.0f;
+
+	if (this->filterButton.getGlobalBounds().contains(mousePosView))
+	{
+		this->filterButton.setPosition(sf::Vector2f(centerX - 913.0f, centerY - 60.0f));
+
+		highlighterWidth = 25.0f;
+		highlighterHeight = 65.0f;
+		//Highlither UI by default
+		this->highLighter_ButtonFilter.setFillColor(sf::Color(227, 107, 211));
+		this->highLighter_ButtonFilter.setOutlineColor(sf::Color::Black);
+		this->highLighter_ButtonFilter.setOutlineThickness(2.0f);
+		this->highLighter_ButtonFilter.setPointCount(4);
+		//Highlither UI width & height by default
+		this->highLighter_ButtonFilter.setPoint(0, sf::Vector2f(400 - highlighterWidth / 2, 300 - highlighterHeight / 2)); // Top-left
+		this->highLighter_ButtonFilter.setPoint(1, sf::Vector2f(400 + highlighterWidth / 2, 300 - highlighterHeight / 2)); // Top-right
+		this->highLighter_ButtonFilter.setPoint(2, sf::Vector2f(450 + highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-right
+		this->highLighter_ButtonFilter.setPoint(3, sf::Vector2f(450 - highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-left
+		this->highLighter_ButtonFilter.setPosition(sf::Vector2f(centerX - 1010.0f, centerY - 60.0f));
+	}
+	else
+	{
+		this->filterButton.setPosition(sf::Vector2f(centerX - 913.0f, centerY - 60.0f));
+
+		//Highlither UI by default
+		this->highLighter_ButtonFilter.setFillColor(sf::Color(227, 107, 211));
+		this->highLighter_ButtonFilter.setOutlineColor(sf::Color::Black);
+		this->highLighter_ButtonFilter.setOutlineThickness(2.0f);
+		this->highLighter_ButtonFilter.setPointCount(4);
+		//Highlither UI width & height by default
+		this->highLighter_ButtonFilter.setPoint(0, sf::Vector2f(400 - highlighterWidth / 2, 300 - highlighterHeight / 2)); // Top-left
+		this->highLighter_ButtonFilter.setPoint(1, sf::Vector2f(400 + highlighterWidth / 2, 300 - highlighterHeight / 2)); // Top-right
+		this->highLighter_ButtonFilter.setPoint(2, sf::Vector2f(450 + highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-right
+		this->highLighter_ButtonFilter.setPoint(3, sf::Vector2f(450 - highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-left
+		this->highLighter_ButtonFilter.setPosition(sf::Vector2f(centerX - 1000.0f, centerY - 60.0f));
+	}
+
+	if (this->filterButton.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->showFilters = true;
+	}
+}
+void LibraryGUI::renderBLMS_FilterButton(sf::RenderTarget* target)
+{
+	/*
+	  @return void
+	  - Display Filter button :
+	  Display Filter button UI, highlighter.
+	*/
+
+	target->draw(this->filterButton);
+	target->draw(this->UI_filterButton);
+	target->draw(this->highLighter_ButtonFilter);
+}
+
+   //Books panel Update & Render methods
 void LibraryGUI::updateBLMS_BooksPanel()
 {
 	/*
 	  @return void
-	  - Update view panel.
-	*/
 
+	*/
 }
 void LibraryGUI::renderBLMS_BooksPanel(sf::RenderTarget* target, std::unordered_map<unsigned, sf::Text>& books_Storage, sf::Vector2f& mousePosView, std::vector<sf::RectangleShape>& checkBoxes, sf::RectangleShape& checkBox)
 {
@@ -315,11 +394,9 @@ void LibraryGUI::renderBLMS_BooksPanel(sf::RenderTarget* target, std::unordered_
 	target->draw(this->yourListPanel);
 	target->draw(this->UI_yourListPanel);
 
-	float moveDown{ 0.0f };
-
 	for (this->book = 0; this->book < books_Storage.size(); ++this->book)
 	{
-		if (this->book >= 28.0f)
+		if (this->book >= 28)
 		{
 			this->pollEvent();
 		}
@@ -332,13 +409,13 @@ void LibraryGUI::renderBLMS_BooksPanel(sf::RenderTarget* target, std::unordered_
 		//Adjust the book's position using the scrollPosition
 		books_Storage[book].setPosition(sf::Vector2f(
 			this->booksPanel.getPosition().x + 100.0f, 
-			this->booksPanel.getPosition().y + 18.0f + moveDown - scrollPosition
+			this->booksPanel.getPosition().y + 18.0f + this->moveDown - this->scrollPosition
 		));
 
 		//Adjust the book's position using the scrollPosition
 		checkBoxes[book].setPosition(sf::Vector2f(
 			this->booksPanel.getPosition().x + 10.0f,
-			this->booksPanel.getPosition().y + 19.0f + moveDown - scrollPosition
+			this->booksPanel.getPosition().y + 19.0f + this->moveDown - this->scrollPosition
 		));
 
 		std::ifstream inputFile("BOOKS_STORAGE_CHECK.txt");
@@ -382,48 +459,110 @@ void LibraryGUI::renderBLMS_BooksPanel(sf::RenderTarget* target, std::unordered_
 		{
 			if (checkBoxes[book].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				colorChanger = sf::Color::Green;
-
 				checkBoxes[book].setFillColor(this->colorChanger);
 
-				std::ofstream outputFile("BOOKS_STORAGE_CHECK.txt", std::ios::app);
-				if (!outputFile)
+				std::ifstream inputFileColor("BOOKS_STORAGE_CHECK.txt");
+				if (!inputFileColor)
 				{
 					std::cerr << "[ERROR] can't open BOOKS_STORAGE_CHECK.txt\n";
+					return; // Exit early if unable to open the input file.
 				}
-				std::string str;
-				str = books_Storage[book].getString();
+
+				std::string name;
+				name = books_Storage[book].getString();
 				std::string color;
 				if (this->colorChanger == sf::Color::Green)
 				{
 					color = "green";
 				}
-				if (this->colorChanger == sf::Color::Yellow)
+				else if (this->colorChanger == sf::Color::Yellow)
 				{
 					color = "yellow";
 				}
-				if (this->colorChanger == sf::Color::Red)
+				else if (this->colorChanger == sf::Color::Red)
 				{
 					color = "red";
 				}
-				outputFile << color << " - " << str << '\n';
+				else
+				{
+					inputFileColor.close();
+					return; // Exit early if the color is not recognized.
+				}
+
+				std::vector<std::string> updatedLines; // Store updated lines in memory.
+
+				std::string str;
+
+				while (std::getline(inputFileColor, str)) {
+					std::istringstream r(str);
+
+					char sp;
+					std::string c;
+					std::string oldName;
+					r >> c >> sp;
+
+					std::getline(r, oldName);
+					oldName.erase(0, 1);
+
+					if (oldName != name)
+					{
+						// If the old book name doesn't match the current book name, keep the old line.
+						updatedLines.push_back(str);
+					}
+				}
+
+				inputFileColor.close();
+
+				// Reopen the output file to write the updated data.
+				std::ofstream outputFile("BOOKS_STORAGE_CHECK.txt");
+				if (!outputFile)
+				{
+					std::cerr << "[ERROR] can't open BOOKS_STORAGE_CHECK.txt\n";
+					return; // Exit early if unable to open the output file.
+				}
+
+				// Write back the updated lines and the new book.
+				for (const std::string& line : updatedLines)
+				{
+					outputFile << line << '\n';
+				}
+
+				// Add the new book with the updated color.
+				outputFile << color << " - " << name << '\n';
+
 				outputFile.close();
 			}
 			checkBoxes[book].setOutlineColor(sf::Color::Black);
 			target->draw(checkBoxes[book]);
 		}
-		moveDown += 55.0f;
-		if (!line.getGlobalBounds().intersects(this->yourListPanel.getGlobalBounds()))
+		this->moveDown += 55.0f;
+		if (!this->line.getGlobalBounds().intersects(this->yourListPanel.getGlobalBounds()))
 		{
-			line.setFillColor(sf::Color::Black);
-			target->draw(line);
+			this->line.setFillColor(sf::Color::Black);
+			target->draw(this->line);
 		}
 		//Adjust the line's position
-		line.setPosition(sf::Vector2f(this->booksPanel.getPosition().x, this->booksPanel.getPosition().y + 9.0f + moveDown + 1.0f - scrollPosition));
+		this->line.setPosition(sf::Vector2f(this->booksPanel.getPosition().x, this->booksPanel.getPosition().y + 9.0f + this->moveDown + 1.0f - this->scrollPosition));
 	}
+
+	this->moveDown = 0.0f;
 }
 
-/// <summary> WIP
+
+//Filters
+void LibraryGUI::updateBLMS_Filters(sf::Vector2f& mousePosView)
+{
+	if (this->checkFilter.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->isColorPicker = true;
+	}
+}
+void LibraryGUI::renderBLMS_Filters(sf::RenderTarget* target)
+{
+	target->draw(this->checkFilter);
+	target->draw(this->UI_checkFilter);
+}
+
 void LibraryGUI::updateBLMS_CheckboxPanel(sf::Vector2f& mousePosView)
 {
 	for (size_t i = 0; i < this->checks.size(); ++i)
@@ -431,60 +570,25 @@ void LibraryGUI::updateBLMS_CheckboxPanel(sf::Vector2f& mousePosView)
 		if (checks[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			this->colorChanger = checks[i].getFillColor();
-			this->isColorPicker = false;
 		}
-		else
-		{
-			this->isColorPicker = true;
-		}
+	}
+
+	if (this->closeCheckboxPanel.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->isColorPicker = false;
 	}
 }
 void LibraryGUI::renderBLMS_CheckboxPanel(sf::RenderTarget* target)
 {
-	if (this->isColorPicker)
-	{
-		target->draw(checkboxPanel);
-		for (auto& check : checks)
-		{
-			target->draw(check);
-		}
-	}
-}
-void LibraryGUI::initBLMS_CheckboxPanel()
-{
-	this->checkboxPanel.setPosition(sf::Vector2f(this->booksPanel.getPosition().x - 280.0f, this->booksPanel.getPosition().y + 30.0f));
-	this->checkboxPanel.setSize(sf::Vector2f(230.0f, 100.0f));
-	this->checkboxPanel.setFillColor(sf::Color(235, 241, 245));
-	this->checkboxPanel.setOutlineColor(sf::Color::Black);
-	this->checkboxPanel.setOutlineThickness(2.5f);
+	target->draw(checkboxPanel);
 
-	float moveRight{ 0.0f };
-
-	for (int i = 0; i < 3; ++i)
+	for (auto& check : checks)
 	{
-		sf::RectangleShape check;
-		if (i == 0)
-		{
-			check.setFillColor(sf::Color::Green);
-		}
-		if (i == 1)
-		{
-			check.setFillColor(sf::Color::Yellow);
-		}
-		if (i == 2)
-		{
-			check.setFillColor(sf::Color::Red);
-		}
-		check.setOutlineColor(sf::Color::Black);
-		check.setPosition(sf::Vector2f(this->booksPanel.getPosition().x - 265.0f + moveRight, this->booksPanel.getPosition().y + 60.0f));
-		moveRight += 80.0f;
-		check.setOutlineThickness(2.5f);
-		check.setSize(sf::Vector2f(40.0f, 40.0f));
-		this->checks.push_back(check);
+		target->draw(check);
 	}
+
+	target->draw(this->closeCheckboxPanel);
 }
-/// </summary> WIP
-/// <param name="CheckboxPanel(WIP)"></param>
 
 void LibraryGUI::pollEvent()
 {
@@ -502,12 +606,12 @@ void LibraryGUI::pollEvent()
 			{
 				if (scrollPosition > 0)
 				{
-					this->scrollPosition -= 15.0f;
+					this->scrollPosition -= this->scrollIncrement;
 				}
 			}
 			if (this->actionEvent.mouseWheelScroll.delta < 0)
 			{
-				this->scrollPosition += 15.0f;
+				this->scrollPosition += this->scrollIncrement;
 			}
 			break;
 		}
@@ -515,32 +619,35 @@ void LibraryGUI::pollEvent()
 }
 
 //Private GUI functions
-void LibraryGUI::updateViewPanel()
-{
-	/*
-	  @return void
-	  - Update the view's position to stay within bounds.
-	  - Update the books view by scrolling down or up.
-	*/
 
-	// Calculate the top and bottom bounds of your content
-	float contentTop = this->booksPanel.getPosition().y;
-	float contentBottom = this->booksPanel.getPosition().y + this->booksPanel.getSize().y;
+//void LibraryGUI::updateViewPanel()
+//{
+//	/*
+//	  @return void
+//	  - Update the view's position to stay within bounds.
+//	  - Update the books view by scrolling down or up.
+//	*/
+//
+//	// Calculate the top and bottom bounds of your content
+//	float contentTop = this->booksPanel.getPosition().y;
+//	float contentBottom = this->booksPanel.getPosition().y + this->booksPanel.getSize().y;
+//
+//	// Calculate the top and bottom bounds of the view
+//	float viewTop = this->booksView.getCenter().y - this->booksView.getSize().y / 2;
+//	float viewBottom = this->booksView.getCenter().y + this->booksView.getSize().y / 2;
+//
+//	// Update the view's position to stay within the bounds of your content
+//	if (viewTop < contentTop) {
+//		// Adjust the view's center to keep it within the top bounds
+//		this->booksView.setCenter(this->booksView.getCenter().x, this->booksView.getSize().y / 2);
+//	}
+//	else if (viewBottom > contentBottom) {
+//		// Adjust the view's center to keep it within the bottom bounds
+//		this->booksView.setCenter(this->booksView.getCenter().x, contentBottom - this->booksView.getSize().y / 2);
+//	}
+//}
 
-	// Calculate the top and bottom bounds of the view
-	float viewTop = this->booksView.getCenter().y - this->booksView.getSize().y / 2;
-	float viewBottom = this->booksView.getCenter().y + this->booksView.getSize().y / 2;
-
-	// Update the view's position to stay within the bounds of your content
-	if (viewTop < contentTop) {
-		// Adjust the view's center to keep it within the top bounds
-		this->booksView.setCenter(this->booksView.getCenter().x, this->booksView.getSize().y / 2);
-	}
-	else if (viewBottom > contentBottom) {
-		// Adjust the view's center to keep it within the bottom bounds
-		this->booksView.setCenter(this->booksView.getCenter().x, contentBottom - this->booksView.getSize().y / 2);
-	}
-}
+//
 
 //Private functions
 void LibraryGUI::initVariables()
@@ -553,10 +660,12 @@ void LibraryGUI::initVariables()
 	this->isLibraryOpen = false;
 	this->requestToClose = false;
 	this->addBook = false; 
+	this->moveDown =  0.0f;
 	this->scrollPosition = 0.0f;
+	this->scrollIncrement = 15.0f;
 	this->book = 0;
-	this->colorChanger = sf::Color(235, 241, 245);
-	this->mouseClicked = false;
+	this->colorChanger = sf::Color::White;
+	this->showFilters = false;
 
 	//this->isColorPicker = false; WIP
 }
@@ -656,6 +765,34 @@ void LibraryGUI::initBLMS_ButtonExit()
 	this->UI_exitButton.setString("Exit");
 	this->UI_exitButton.setPosition(this->exitButton.getPosition().x + 10.0f, this->exitButton.getPosition().y + 770.0f);
 }
+void LibraryGUI::initBLMS_ButtonFilter()
+{
+	/*
+	  @return void
+	  - Initialize the Filter button and its UI text.
+	*/
+
+	float buttonWidth = 180.0f;
+	float buttonHeight = 65.0f;
+
+	//Filter button by default
+	this->filterButton.setFillColor(sf::Color(235, 241, 245));
+	this->filterButton.setOutlineColor(sf::Color::Black);
+	this->filterButton.setOutlineThickness(2.0f);
+	this->filterButton.setPointCount(4);
+	//Filter button width & height by default
+	this->filterButton.setPoint(0, sf::Vector2f(400 - buttonWidth / 2, 300 - buttonHeight / 2)); // Top-left
+	this->filterButton.setPoint(1, sf::Vector2f(400 + buttonWidth / 2, 300 - buttonHeight / 2)); // Top-right
+	this->filterButton.setPoint(2, sf::Vector2f(400 + buttonWidth / 2, 300 + buttonHeight / 2)); // Bottom-right
+	this->filterButton.setPoint(3, sf::Vector2f(450 - buttonWidth / 2, 300 + buttonHeight / 2)); // Bottom-left
+	//Filter button UI
+	this->UI_filterButton.setFont(this->mainFont);
+	this->UI_filterButton.setFillColor(sf::Color::Black);
+	this->UI_filterButton.setCharacterSize(40);
+	this->UI_filterButton.setString("Filters");
+	this->UI_filterButton.setPosition(this->filterButton.getPosition().x + 195.0f, this->filterButton.getPosition().y + 663.0f);
+}
+
 void LibraryGUI::initBLMS_BooksPanel()
 {
 	/*
@@ -765,4 +902,59 @@ void LibraryGUI::initBLMS_printBookText()
 	this->printBookText.setFillColor(sf::Color::Black); // Set the text color
 	this->printBookText.setString("NONE");
 	this->printBookText.setPosition(sf::Vector2f(this->addBookBar.getPosition().x, this->addBookBar.getPosition().y + 10000.0f));
+}
+
+void LibraryGUI::initBLMS_Filters()
+{
+	this->checkFilter.setFillColor(sf::Color(235, 241, 245));
+	this->checkFilter.setOutlineColor(sf::Color::Black);
+	this->checkFilter.setOutlineThickness(1.0f);
+	this->checkFilter.setPosition(sf::Vector2f(this->booksPanel.getPosition().x - 310.0f, this->booksPanel.getPosition().y + 400.0f));
+	this->checkFilter.setSize(sf::Vector2f(100.0f, 30.0f));
+
+	//Filter button UI
+	this->UI_checkFilter.setFont(this->mainFont);
+	this->UI_checkFilter.setFillColor(sf::Color::Black);
+	this->UI_checkFilter.setCharacterSize(15);
+	this->UI_checkFilter.setString("check marks");
+	this->UI_checkFilter.setPosition(this->checkFilter.getPosition().x + 2.0f, this->checkFilter.getPosition().y + 5.0f);
+}
+void LibraryGUI::initBLMS_CheckboxPanel()
+{
+	this->checkboxPanel.setPosition(sf::Vector2f(this->booksPanel.getPosition().x - 280.0f, this->booksPanel.getPosition().y + 30.0f));
+	this->checkboxPanel.setSize(sf::Vector2f(230.0f, 100.0f));
+	this->checkboxPanel.setFillColor(sf::Color(235, 241, 245));
+	this->checkboxPanel.setOutlineColor(sf::Color::Black);
+	this->checkboxPanel.setOutlineThickness(2.5f);
+
+	float moveRight{ 0.0f };
+
+	for (int i = 0; i < 3; ++i)
+	{
+		sf::RectangleShape check;
+		if (i == 0)
+		{
+			check.setFillColor(sf::Color::Green);
+		}
+		if (i == 1)
+		{
+			check.setFillColor(sf::Color::Yellow);
+		}
+		if (i == 2)
+		{
+			check.setFillColor(sf::Color::Red);
+		}
+		check.setOutlineColor(sf::Color::Black);
+		check.setPosition(sf::Vector2f(this->booksPanel.getPosition().x - 265.0f + moveRight, this->booksPanel.getPosition().y + 60.0f));
+		moveRight += 80.0f;
+		check.setOutlineThickness(2.5f);
+		check.setSize(sf::Vector2f(40.0f, 40.0f));
+		this->checks.push_back(check);
+	}
+
+	this->closeCheckboxPanel.setPosition(sf::Vector2f(this->checkboxPanel.getPosition().x + 220.0f, this->checkboxPanel.getPosition().y - 5.0f));
+	this->closeCheckboxPanel.setRadius(8.0f);
+	this->closeCheckboxPanel.setFillColor(sf::Color(66, 66, 64));
+	this->closeCheckboxPanel.setOutlineColor(sf::Color::Black);
+	this->closeCheckboxPanel.setOutlineThickness(2.0f);
 }
