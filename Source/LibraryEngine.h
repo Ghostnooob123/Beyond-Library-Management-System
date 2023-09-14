@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <unordered_map>
+#include <vector>
 #include <set>
 
 #include <SFML/Graphics.hpp>
@@ -13,26 +13,29 @@
 
 #include "LibraryGUI.h"
 
-class LibraryEngine
+class LibraryEngine final
 {
 public:
 	//Constructor & Destructor
 	LibraryEngine();
 	~LibraryEngine();
-public:
 	//Accessors
 	const bool isAppRunning() const;
 
 	//Public Engine functions
 	void update();
 	void render();
+	void renderBLMS_BooksPanel();
 private:
 	//Private Engine functions
 	void pollEvents();
 	void updateMousePos();
-
+	void libraryTest();
+	void uniqueBook_CheckMark();
+	void orderFrom_A_To_Z();
+	void orderFrom_Z_To_A();
+	void removeBook();
 	void updateLibrary();
-private:
 	//Variables
 	  //Window
 	sf::RenderWindow* window;
@@ -47,18 +50,20 @@ private:
 	sf::Sprite sprite;
 
 	//App engine logic
-	std::unordered_map<unsigned, sf::Text> newBookInput_Storage; //Every book have unique ID & name.
-	std::unordered_map<unsigned, sf::Text> books_Storage; //Every book have unique ID & name.
+	std::vector<sf::Text> newBookInput_Storage; //Every "new" book have unique ID & name.
+	std::vector<sf::Text> books_Storage; //Every book have unique ID & name.
 	std::vector<sf::RectangleShape> checkBoxes;
 	sf::RectangleShape checkBox;
+	std::vector<sf::RectangleShape> deleteRequests;
+	sf::RectangleShape deleteRequest;
+	std::vector<sf::Text> removeBookInput_Storage; //remove book from the list storage for the text
+
 
 	int ID;
 	bool updateOnStart;
 	std::string userInputString;
 	sf::Text userInputText;
-
-	int maxCharsOnLine;
-	int	charsOnLine;
+	float moveDown;
 
 	LibraryGUI* libraryGUI = new LibraryGUI;
 

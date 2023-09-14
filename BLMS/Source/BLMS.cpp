@@ -2,8 +2,9 @@
 
 #include "LibraryEngine.h"
 
-int main()
+int WinMain()
 {
+
     LibraryEngine* library = new LibraryEngine();
 
 	while (library->isAppRunning())
