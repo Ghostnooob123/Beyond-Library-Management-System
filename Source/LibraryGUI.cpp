@@ -618,7 +618,7 @@ void LibraryGUI::renderBLMS_BooksPanel(
 
 		//Adjust the books's delete option position using the scrollPosition
 		deleteRequests[this->book].setPosition(sf::Vector2f(
-			this->booksPanel.getPosition().x + 800.0f,
+			this->booksPanel.getPosition().x + 930.0f,
 			this->booksPanel.getPosition().y + 18.0f + this->moveDown - this->scrollPosition
 		));
 
@@ -772,7 +772,7 @@ void LibraryGUI::renderBLMS_BooksPanel(
 			target->draw(deleteRequests[this->book]);
 		}
 
-		this->deleteBookButton.setPosition(sf::Vector2f(this->booksPanel.getPosition().x + 800.0f, this->booksPanel.getPosition().y + 20.0f + this->moveDown + 1.0f - this->scrollPosition));
+		this->deleteBookButton.setPosition(sf::Vector2f(this->booksPanel.getPosition().x + 930.0f, this->booksPanel.getPosition().y + 20.0f + this->moveDown + 1.0f - this->scrollPosition));
 
 		if (!this->deleteBookButton.getGlobalBounds().intersects(this->yourListPanel.getGlobalBounds()))
 		{
@@ -799,6 +799,7 @@ void LibraryGUI::updateBLMS_RemoveBook(float& centerX, float& centerY)
 {
 	if (this->isBookDelete)
 	{
+		this->addBook = false;
 		this->removBookBar.setPosition(sf::Vector2f(centerX - 735.0f, centerY - 310.0f));
 		this->warningPanel.setPosition(sf::Vector2f(centerX - 725.0f, centerY - 388.0f));
 	}
@@ -810,6 +811,7 @@ void LibraryGUI::renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf:
 		target->draw(this->removBookBar);
 		target->draw(this->warningPanel);
 		target->draw(this->UI_warningPanel);
+		target->draw(this->closeWarningPanel);
 		for (auto& removeBook : removeBookInput_Storage)
 		{
 			removeBook.setPosition(sf::Vector2f(this->removBookBar.getPosition().x + 5.0f, this->removBookBar.getPosition().y + 15.0f));
@@ -1206,7 +1208,7 @@ void LibraryGUI::initBLMS_InfoPanel()
 	this->UI_InfoPanel.setFillColor(sf::Color::Black);
 	this->UI_InfoPanel.setCharacterSize(17);
 	std::string Info;
-	Info = "* The purpose of this program is to make it easier to save your own books in one big collection, \n where you can filter them : Sort, Mark, Delete.\n\n - \"Open Your List\", this button opens your list of books. \n - \"New Book\", this button allows you to add new book to your list. \n - \"Filters\", this button allows you to filter your list of books. \n - \"Exit\", this button close the program and Save your data. \n - \"Close Your List\", this button closes the list of books you have.\n - \"Remove\", this button allows you to remove ( Delete ) book from the list.\n   (* Keep in mind you will see a warning when removing a book. *) \n\n -If there is any issues, bugs, errors reports or just want to suggest improvements\n feel free to send feedback: \n Email: ivorahnev15@gmail.com \n Discord: Ghostnooob123\n";
+	Info = "* The purpose of this program is to make it easier to save your own books in one big collection, \n where you can filter them : Sort, Mark, Remove.\n\n - \"Open Your List\", this button opens your list of books. \n - \"New Book\", this button allows you to add new book to your list. \n - \"Filters\", this button allows you to filter your list of books. \n - \"Exit\", this button closes the program and saves your data. \n - \"Close Your List\", this button closes the list of books you have.\n - \"Remove\", this button allows you to remove ( Delete ) book from the list.\n   (* Keep in mind you will see a warning when removing a book. *) \n\n -If there is any issues, bugs, errors reports or just want to suggest improvements\n feel free to send feedback: \n Email: ivorahnev15@gmail.com \n Discord: Ghostnooob123\n";
 
 	this->UI_InfoPanel.setString(Info);
 	this->UI_InfoPanel.setPosition(sf::Vector2f(this->InfoPanel.getPosition().x + 4.0f, this->InfoPanel.getPosition().y + 25.0f));
@@ -1350,6 +1352,14 @@ void LibraryGUI::initBLMS_removeBookBar()
 	this->UI_warningPanel.setFillColor(sf::Color::Black); // Set the text color
 	this->UI_warningPanel.setString("                       * Warning *\n    Type the book name to remove it.");
 	this->UI_warningPanel.setPosition(sf::Vector2f(this->warningPanel.getPosition().x + 20.0f, this->warningPanel.getPosition().y + 64.0f));
+
+	//Warning Panel Close by deafult
+	this->closeWarningPanel.setPosition(sf::Vector2f(this->warningPanel.getPosition().x + 790.0f, this->warningPanel.getPosition().y - 5.0f));
+	this->closeWarningPanel.setRadius(8.0f);
+	this->closeWarningPanel.setFillColor(sf::Color(66, 66, 64));
+	this->closeWarningPanel.setOutlineColor(sf::Color::Black);
+	this->closeWarningPanel.setOutlineThickness(2.0f);
+
 
 	//Remove book bar by default
 	this->removBookBar.setFillColor(sf::Color(252, 252, 250));

@@ -178,6 +178,12 @@ void LibraryEngine::pollEvents()
 						std::string tempStr;
 						tempStr = this->newBookInput_Storage.back().getString();
 
+
+						if (tempStr.back() == ' ')
+						{
+							tempStr.pop_back();
+						}
+
 						sf::Text userInputText = this->libraryGUI->printBook();
 						userInputText.setString(tempStr);
 
@@ -208,6 +214,10 @@ void LibraryEngine::pollEvents()
 					}
 					else {
 						//Append the entered character to the input string
+						if (this->eventAction.text.unicode == '\b')
+						{
+							continue;
+						}
 						userInputString += static_cast<char>(this->eventAction.text.unicode);
 					}
 					//Update the text in the GUI
@@ -258,6 +268,10 @@ void LibraryEngine::pollEvents()
 					}
 					else {
 						//Append the entered character to the input string
+						if (this->eventAction.text.unicode == '\b')
+						{
+							continue;
+						}
 						userInputString += static_cast<char>(this->eventAction.text.unicode);
 					}
 					//Update the text in the GUI

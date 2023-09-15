@@ -180,6 +180,7 @@ private:
 	sf::RectangleShape removBookBar; 
 	sf::RectangleShape warningPanel;
 	sf::Text UI_warningPanel;
+	sf::CircleShape closeWarningPanel;
 
 	//Private functions
 	void initVariables();
