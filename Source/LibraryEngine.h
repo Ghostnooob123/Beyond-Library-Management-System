@@ -58,12 +58,13 @@ private:
 	sf::RectangleShape deleteRequest;
 	std::vector<sf::Text> removeBookInput_Storage; //remove book from the list storage for the text
 
-
-	int ID;
 	bool updateOnStart;
 	std::string userInputString;
+	std::string removeInputString;
 	sf::Text userInputText;
 	float moveDown;
+	size_t maxChars;
+	bool shiftPressed;
 
 	LibraryGUI* libraryGUI = new LibraryGUI;
 

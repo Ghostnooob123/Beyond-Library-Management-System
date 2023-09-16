@@ -28,6 +28,7 @@ LibraryGUI::LibraryGUI()
 	this->initBLMS_printBookText();
 	this->initBLMS_removeBookBar();
 	this->initBLMS_removeBookText();
+	this->initBLMS_tempLimitWarn();
 
 	this->initBLMS_Filters();
 	this->initBLMS_CheckboxPanel();
@@ -85,6 +86,17 @@ const std::string LibraryGUI::getBookToDelete() const
 const void LibraryGUI::changeDeleteBookRequest() 
 {
 	this->isBookDelete = false;
+}
+
+const void LibraryGUI::clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage)
+{
+	removeBookInput_Storage.clear();
+	removeInputString.clear();
+}
+const void LibraryGUI::clearAddBookBar(std::string& userInputString, std::vector<sf::Text>& newBookInput_Storage)
+{
+	newBookInput_Storage.clear();
+	userInputString.clear();
 }
 
 const bool LibraryGUI::requestShowFilters() const
@@ -247,6 +259,11 @@ void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& cen
 		this->isBookDelete = false;
 	}
 
+	if (this->closeAddBookBar.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->addBook = false;
+	}
+
 	if (this->addBook)
 	{
 		this->addBookBar.setPosition(sf::Vector2f(centerX - 735.0f, centerY - 310.0f));
@@ -270,6 +287,8 @@ void LibraryGUI::renderBLMS_ButtonAddBook(sf::RenderTarget* target, std::vector<
 		target->draw(this->addBookBar);
 		target->draw(this->enterBookPanel);
 		target->draw(this->enterBook);
+		target->draw(this->closeAddBookBar);
+		target->draw(this->limitWarn);
 		for (auto& newBook : newBookInput_Storage)
 		{
 			newBook.setPosition(sf::Vector2f(this->addBookBar.getPosition().x + 5.0f, this->addBookBar.getPosition().y + 15.0f));
@@ -470,6 +489,7 @@ void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float
 		this->isLibraryOpen = false;
 		this->showFilters = false;
 		this->showHowToUse = false;
+		this->addBook = false;
 		this->isBookDelete = false;
 	}
 }
@@ -795,8 +815,12 @@ void LibraryGUI::renderBLMS_BooksPanel(
 // Having issues with the scroll events for scrolling down and up with the mouse ^^^.
 
 
-void LibraryGUI::updateBLMS_RemoveBook(float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY)
 {
+	if (this->closeRemoveBookBar.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->isBookDelete = false;
+	}
 	if (this->isBookDelete)
 	{
 		this->addBook = false;
@@ -811,7 +835,8 @@ void LibraryGUI::renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf:
 		target->draw(this->removBookBar);
 		target->draw(this->warningPanel);
 		target->draw(this->UI_warningPanel);
-		target->draw(this->closeWarningPanel);
+		target->draw(this->closeRemoveBookBar);
+		target->draw(this->limitWarn);
 		for (auto& removeBook : removeBookInput_Storage)
 		{
 			removeBook.setPosition(sf::Vector2f(this->removBookBar.getPosition().x + 5.0f, this->removBookBar.getPosition().y + 15.0f));
@@ -934,7 +959,7 @@ void LibraryGUI::pollEvent()
 }
 
 //Private GUI functions
-//void updateViewPanel();
+// - void updateViewPanel(); WIP
 
 //void LibraryGUI::updateViewPanel()
 //{
@@ -986,9 +1011,11 @@ void LibraryGUI::initVariables()
 	this->isOrderA_Z = false;
 	this->showHowToUse = false;
 	this->isBookDelete = false;
+	this->increaseBar = 30.0f;
 
 	this->isColorPicker = false;
 }
+
 void LibraryGUI::initBLMS_Font()
 {
 	/*
@@ -1296,6 +1323,13 @@ void LibraryGUI::initBLMS_addNewBookBar()
 	this->enterBook.setString("Enter a book");
 	this->enterBook.setPosition(sf::Vector2f(this->enterBookPanel.getPosition().x + 20.0f, this->enterBookPanel.getPosition().y + 105.0f));
 
+	//Add book bar Close by deafult
+	this->closeAddBookBar.setPosition(sf::Vector2f(this->enterBookPanel.getPosition().x + 355.0f, this->enterBookPanel.getPosition().y + 135.0f));
+	this->closeAddBookBar.setRadius(8.0f);
+	this->closeAddBookBar.setFillColor(sf::Color(66, 66, 64));
+	this->closeAddBookBar.setOutlineColor(sf::Color::Black);
+	this->closeAddBookBar.setOutlineThickness(2.0f);
+
 	//addNewBookBar by default
 	this->addBookBar.setFillColor(sf::Color(252, 252, 250));
 	this->addBookBar.setOutlineColor(sf::Color::Black);
@@ -1353,12 +1387,12 @@ void LibraryGUI::initBLMS_removeBookBar()
 	this->UI_warningPanel.setString("                       * Warning *\n    Type the book name to remove it.");
 	this->UI_warningPanel.setPosition(sf::Vector2f(this->warningPanel.getPosition().x + 20.0f, this->warningPanel.getPosition().y + 64.0f));
 
-	//Warning Panel Close by deafult
-	this->closeWarningPanel.setPosition(sf::Vector2f(this->warningPanel.getPosition().x + 790.0f, this->warningPanel.getPosition().y - 5.0f));
-	this->closeWarningPanel.setRadius(8.0f);
-	this->closeWarningPanel.setFillColor(sf::Color(66, 66, 64));
-	this->closeWarningPanel.setOutlineColor(sf::Color::Black);
-	this->closeWarningPanel.setOutlineThickness(2.0f);
+	//Remove book bar Close by deafult
+	this->closeRemoveBookBar.setPosition(sf::Vector2f(this->warningPanel.getPosition().x + 355.0f, this->warningPanel.getPosition().y + 135.0f));
+	this->closeRemoveBookBar.setRadius(8.0f);
+	this->closeRemoveBookBar.setFillColor(sf::Color(66, 66, 64));
+	this->closeRemoveBookBar.setOutlineColor(sf::Color::Black);
+	this->closeRemoveBookBar.setOutlineThickness(2.0f);
 
 
 	//Remove book bar by default
@@ -1380,6 +1414,15 @@ void LibraryGUI::initBLMS_removeBookText()
 	this->removeBookText.setFillColor(sf::Color::Black); // Set the text color
 	this->removeBookText.setString("NONE");
 	this->removeBookText.setPosition(sf::Vector2f(this->addBookBar.getPosition().x, this->addBookBar.getPosition().y + 10000.0f));
+}
+void LibraryGUI::initBLMS_tempLimitWarn()
+{
+	//printBookText by default
+	this->limitWarn.setFont(this->booksFont); // Set the font you want to use
+	this->limitWarn.setCharacterSize(15); // Set the font size
+	this->limitWarn.setFillColor(sf::Color::Black); // Set the text color
+	this->limitWarn.setString("/* Book should contain from 2 - 30 characters *\\");
+	this->limitWarn.setPosition(sf::Vector2f(this->addBookBar.getPosition().x + 12.0f, this->addBookBar.getPosition().y + 203.0f));
 }
 
 void LibraryGUI::initBLMS_Filters()

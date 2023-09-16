@@ -71,7 +71,7 @@ void LibraryEngine::update()
 		}
 		if (this->libraryGUI->requestDeleteBook())
 		{
-			this->libraryGUI->updateBLMS_RemoveBook(this->centerX, this->centerY);
+			this->libraryGUI->updateBLMS_RemoveBook(this->mousePosView, this->centerX, this->centerY);
 		}
 	}
 	if (this->libraryGUI->requestInfoPanel())
@@ -107,6 +107,10 @@ void LibraryEngine::render()
 		this->libraryGUI->renderBLMS_ButtonCloseLibrary(this->window);
 
 		//Render add new book button
+		if (!this->libraryGUI->requestAddBook())
+		{
+			this->libraryGUI->clearAddBookBar(this->userInputString, this->newBookInput_Storage);
+		}
 		this->libraryGUI->renderBLMS_ButtonAddBook(this->window, this->newBookInput_Storage);
 
 		//Render info button
@@ -133,7 +137,11 @@ void LibraryEngine::render()
 		{
 			this->libraryGUI->renderBLMS_CheckboxPanel(this->window);
 		}
-		if (this->libraryGUI->requestDeleteBook())
+		if (!this->libraryGUI->requestDeleteBook())
+		{
+			this->libraryGUI->clearRemoveBookBar(this->removeInputString, this->removeBookInput_Storage);
+		}
+		else
 		{
 			this->libraryGUI->renderBLMS_RemoveBook(this->window, this->removeBookInput_Storage);
 		}
@@ -160,6 +168,18 @@ void LibraryEngine::pollEvents()
 	{
 		switch (this->eventAction.type)
 		{
+		case sf::Event::KeyPressed:
+			if (this->eventAction.key.code == sf::Keyboard::LShift || this->eventAction.key.code == sf::Keyboard::RShift) {
+				// Shift key is pressed
+				this->shiftPressed = true;
+			}
+			break;
+		case sf::Event::KeyReleased:
+			if (this->eventAction.key.code == sf::Keyboard::LShift || this->eventAction.key.code == sf::Keyboard::RShift) {
+				// Shift key is pressed
+				this->shiftPressed = true;
+			}
+			break;
 		case sf::Event::TextEntered:
 			if (this->libraryGUI->requestAddBook())
 			{
@@ -177,7 +197,6 @@ void LibraryEngine::pollEvents()
 						this->userInputString.clear();
 						std::string tempStr;
 						tempStr = this->newBookInput_Storage.back().getString();
-
 
 						if (tempStr.back() == ' ')
 						{
@@ -213,12 +232,27 @@ void LibraryEngine::pollEvents()
 						this->libraryGUI->changeRequestAddBook();
 					}
 					else {
-						//Append the entered character to the input string
+						//Check if whole new string is bigger than size capacity
+						if (this->userInputString.length() >= this->maxChars)
+						{
+							continue;
+						}
+						//Check if the char is backspace
 						if (this->eventAction.text.unicode == '\b')
 						{
 							continue;
 						}
-						userInputString += static_cast<char>(this->eventAction.text.unicode);
+						if (this->shiftPressed)
+						{
+							std::tolower(this->eventAction.text.unicode);
+						}
+						else
+						{
+							std::toupper(this->eventAction.text.unicode);
+						}
+						//Append the entered character to the input string
+						this->userInputString += static_cast<char>(this->eventAction.text.unicode);
+						this->newBookInput_Storage.clear();
 					}
 					//Update the text in the GUI
 					sf::Text userInputText = this->libraryGUI->userInput();
@@ -229,10 +263,10 @@ void LibraryEngine::pollEvents()
 			if (this->libraryGUI->requestDeleteBook())
 			{
 				if (this->eventAction.text.unicode < 128) {
-					if (this->eventAction.text.unicode == '\b' && !this->userInputString.empty())
+					if (this->eventAction.text.unicode == '\b' && !this->removeInputString.empty())
 					{
 						//Handle backspace (remove last character)
-						this->userInputString.pop_back();
+						this->removeInputString.pop_back();
 						this->removeBookInput_Storage.clear();
 					}
 					else if (this->eventAction.text.unicode == '\r')
@@ -267,16 +301,30 @@ void LibraryEngine::pollEvents()
 						this->libraryGUI->changeDeleteBookRequest();
 					}
 					else {
-						//Append the entered character to the input string
+						//Check if whole new string is bigger than size capacity
+						if (this->removeInputString.length() >= this->maxChars)
+						{
+							continue;
+						}
+						//Check if the char is backspace
 						if (this->eventAction.text.unicode == '\b')
 						{
 							continue;
 						}
-						userInputString += static_cast<char>(this->eventAction.text.unicode);
+						if (this->shiftPressed)
+						{
+							std::tolower(this->eventAction.text.unicode);
+						}
+						else
+						{
+							std::toupper(this->eventAction.text.unicode);
+						}
+						this->removeInputString += static_cast<char>(this->eventAction.text.unicode);
+						this->removeBookInput_Storage.clear();
 					}
 					//Update the text in the GUI
 					sf::Text userInputText = this->libraryGUI->userInput();
-					userInputText.setString(userInputString);
+					userInputText.setString(removeInputString);
 					this->removeBookInput_Storage.push_back(userInputText);
 				}
 			break;
@@ -594,8 +642,9 @@ void LibraryEngine::updateLibrary()
 void LibraryEngine::initVariables()
 {
 	this->window = nullptr;
-	this->ID = 0;
 	this->updateOnStart = false;
+	this->maxChars = 30;
+	this->shiftPressed = false;
 }
 void LibraryEngine::initWindow()
 {

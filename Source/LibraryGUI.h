@@ -29,6 +29,8 @@ public:
 	const bool requestDeleteBook() const;
 	const std::string getBookToDelete() const;
 	const void changeDeleteBookRequest();
+	const void clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage);
+	const void clearAddBookBar(std::string& userInputString, std::vector<sf::Text>& newBookInput_Storage);
 
 	const bool requestShowFilters() const;
 	const bool requestCheckBoxColor() const;
@@ -87,7 +89,7 @@ public:
 		sf::RectangleShape& deleteReqest
 	);
 
-	void updateBLMS_RemoveBook(float& centerX, float& centerY);
+	void updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY);
 	void renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf::Text>& removeBookInput_Storage);
 
 	void pollEvent();
@@ -137,10 +139,22 @@ private:
 	sf::Text userInputText;
 	sf::RectangleShape enterBookPanel;
 	sf::Text enterBook;
+	sf::CircleShape closeAddBookBar;
+	sf::Text limitWarn;
+	bool closeAddBook;
 	  //Info panel
 	sf::RectangleShape InfoPanel;
 	sf::Text UI_InfoPanel;
 	sf::CircleShape closeInfoPanel;
+	  //Remove book 
+	bool isBookDelete;
+	std::string bookToDelete;
+	sf::Text removeBookText;
+	sf::RectangleShape removBookBar;
+	sf::RectangleShape warningPanel;
+	sf::Text UI_warningPanel;
+	sf::CircleShape closeRemoveBookBar;
+	bool closeRemoveBook;
 	//Filter options
 	sf::RectangleShape filterPanel;
 	bool showFilters;
@@ -162,6 +176,15 @@ private:
 	sf::RectangleShape orderZ_A_Filter;
 	sf::Text UI_orderZ_A_Filter;
 	bool isOrderZ_A;
+	   //Remove filter
+	sf::RectangleShape removeFilter;
+	sf::Text UI_removeFilter;
+	bool isRemoveFilter;
+	//Warning
+	sf::RectangleShape existingBookWarn;
+	sf::Text UI_existingBookWarn;
+	sf::CircleShape closeExistingBookWarn;
+	bool getWarn;
 
 	  //App engine logic
 	bool isLibraryOpen;
@@ -173,14 +196,7 @@ private:
 	size_t book;
 	sf::Color colorChanger;
 	bool showHowToUse;
-
-	bool isBookDelete;
-	std::string bookToDelete;
-	sf::Text removeBookText;
-	sf::RectangleShape removBookBar; 
-	sf::RectangleShape warningPanel;
-	sf::Text UI_warningPanel;
-	sf::CircleShape closeWarningPanel;
+	float increaseBar;
 
 	//Private functions
 	void initVariables();
@@ -203,6 +219,7 @@ private:
 	void initBLMS_printBookText();
 	void initBLMS_removeBookBar();
 	void initBLMS_removeBookText();
+	void initBLMS_tempLimitWarn();
 
 	void initBLMS_Filters();
 	void initBLMS_FilterPanel();
