@@ -124,7 +124,9 @@ void LibraryEngine::render()
 			this->checkBoxes, 
 			this->checkBox, 
 			this->deleteRequests, 
-			this->deleteRequest
+			this->deleteRequest,
+			this->scrollPosition,
+			this->scrollIncrement
 		);
 
 		//Render Filter button and his filters
@@ -180,6 +182,19 @@ void LibraryEngine::pollEvents()
 				this->shiftPressed = true;
 			}
 			break;
+		case sf::Event::MouseWheelScrolled:
+			if (this->eventAction.mouseWheelScroll.delta > 0)
+			{
+				if (this->scrollPosition > 0)
+				{
+					this->scrollPosition -= this->scrollIncrement;
+				}
+			}
+			if (this->eventAction.mouseWheelScroll.delta < 0)
+			{
+				this->scrollPosition += this->scrollIncrement;
+			}
+			break;
 		case sf::Event::TextEntered:
 			if (this->libraryGUI->requestAddBook())
 			{
@@ -198,13 +213,23 @@ void LibraryEngine::pollEvents()
 						std::string tempStr;
 						tempStr = this->newBookInput_Storage.back().getString();
 
-						if (tempStr.back() == ' ')
+						std::string str;
+
+						for (auto& c : tempStr)
 						{
-							tempStr.pop_back();
+							if (c != '\n')
+							{
+								str += c;
+							}
+						}
+
+						if (str.back() == ' ')
+						{
+							str.pop_back();
 						}
 
 						sf::Text userInputText = this->libraryGUI->printBook();
-						userInputText.setString(tempStr);
+						userInputText.setString(str);
 
 						bool sameName{ false };
 
@@ -223,19 +248,34 @@ void LibraryEngine::pollEvents()
 							{
 								std::cerr << "[ERROR] can't open BOOKS_STORAGE.txt\n";
 							}
-							outputFile << tempStr << '\n';
+							outputFile << str << '\n';
 							outputFile.close();
 
 							this->books_Storage.push_back(userInputText);
 						}
 						this->newBookInput_Storage.clear();
+						this->libraryGUI->limitReverse();
+						this->newLine = 0;
 						this->libraryGUI->changeRequestAddBook();
 					}
 					else {
 						//Check if whole new string is bigger than size capacity
-						if (this->userInputString.length() >= this->maxChars)
+						if (this->eventAction.text.unicode == '\\' || this->eventAction.text.unicode == '/')
 						{
-							continue;
+							this->userInputString += static_cast<char>(this->eventAction.text.unicode);
+						}
+						if (this->userInputString.length() >= this->maxCharsLine)
+						{
+							if (this->newLine == 0)
+							{
+								this->userInputString += '\n';
+								this->libraryGUI->limitReached();
+								this->newLine = 1;
+							}
+							if (this->userInputString.length() >= this->maxChars)
+							{
+								continue;
+							}
 						}
 						//Check if the char is backspace
 						if (this->eventAction.text.unicode == '\b')
@@ -256,7 +296,7 @@ void LibraryEngine::pollEvents()
 					}
 					//Update the text in the GUI
 					sf::Text userInputText = this->libraryGUI->userInput();
-					userInputText.setString(userInputString);
+					userInputText.setString(this->userInputString);
 					this->newBookInput_Storage.push_back(userInputText);
 				}
 			}
@@ -276,10 +316,21 @@ void LibraryEngine::pollEvents()
 						this->userInputString.clear();
 						std::string tempStr;
 						tempStr = this->removeBookInput_Storage.back().getString();
-						if (tempStr == this->libraryGUI->getBookToDelete())
+
+						std::string str;
+
+						for (auto& c : tempStr)
+						{
+							if (c != '\n')
+							{
+								str += c;
+							}
+						}
+
+						if (str == this->libraryGUI->getBookToDelete())
 						{
 							sf::Text userInputText = this->libraryGUI->printBook();
-							userInputText.setString(tempStr);
+							userInputText.setString(str);
 
 							this->removeBook();
 
@@ -297,14 +348,25 @@ void LibraryEngine::pollEvents()
 							}
 						}
 						this->removeBookInput_Storage.clear();
+						this->libraryGUI->limitReverse();
 						this->checkBoxes.clear();
+						this->newLine = 0;
 						this->libraryGUI->changeDeleteBookRequest();
 					}
 					else {
 						//Check if whole new string is bigger than size capacity
-						if (this->removeInputString.length() >= this->maxChars)
+						if (this->removeInputString.length() >= this->maxCharsLine)
 						{
-							continue;
+							if (this->newLine == 0)
+							{
+								this->removeInputString += '\n';
+								this->libraryGUI->limitReached();
+								this->newLine = 1;
+							}
+							if (this->removeInputString.length() >= this->maxChars)
+							{
+								continue;
+							}
 						}
 						//Check if the char is backspace
 						if (this->eventAction.text.unicode == '\b')
@@ -324,7 +386,7 @@ void LibraryEngine::pollEvents()
 					}
 					//Update the text in the GUI
 					sf::Text userInputText = this->libraryGUI->userInput();
-					userInputText.setString(removeInputString);
+					userInputText.setString(this->removeInputString);
 					this->removeBookInput_Storage.push_back(userInputText);
 				}
 			break;
@@ -643,8 +705,14 @@ void LibraryEngine::initVariables()
 {
 	this->window = nullptr;
 	this->updateOnStart = false;
-	this->maxChars = 30;
+	this->newLine = 0;
+	this->maxChars = 45;
+	this->maxCharsLine = 30;
 	this->shiftPressed = false;
+	this->forbiddenSymbol = ' ';
+
+	this->scrollPosition = 0.0f;
+	this->scrollIncrement = 15.0f;
 }
 void LibraryEngine::initWindow()
 {

@@ -64,7 +64,13 @@ private:
 	sf::Text userInputText;
 	float moveDown;
 	size_t maxChars;
+	size_t maxCharsLine;
 	bool shiftPressed;
+	size_t newLine;
+	char forbiddenSymbol;
+
+	float scrollPosition;
+	float scrollIncrement;
 
 	LibraryGUI* libraryGUI = new LibraryGUI;
 

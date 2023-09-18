@@ -29,8 +29,12 @@ public:
 	const bool requestDeleteBook() const;
 	const std::string getBookToDelete() const;
 	const void changeDeleteBookRequest();
+
 	const void clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage);
 	const void clearAddBookBar(std::string& userInputString, std::vector<sf::Text>& newBookInput_Storage);
+
+	const void limitReached();
+	const void limitReverse();
 
 	const bool requestShowFilters() const;
 	const bool requestCheckBoxColor() const;
@@ -86,13 +90,14 @@ public:
 		std::vector<sf::RectangleShape>& checkBoxes,
 		sf::RectangleShape& checkBox, 
 		std::vector<sf::RectangleShape>& deleteRequests, 
-		sf::RectangleShape& deleteReqest
+		sf::RectangleShape& deleteReqest,
+		float scrollPosition,
+	    float scrollIncrement
 	);
 
 	void updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY);
 	void renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf::Text>& removeBookInput_Storage);
 
-	void pollEvent();
 private:
 	//Private GUI functions
 	void updateViewPanel();
@@ -191,8 +196,6 @@ private:
 	bool requestToClose;
 	bool addBook;
 	float moveDown;
-	float scrollPosition;
-	float scrollIncrement;
 	size_t book;
 	sf::Color colorChanger;
 	bool showHowToUse;

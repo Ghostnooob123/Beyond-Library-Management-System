@@ -99,6 +99,17 @@ const void LibraryGUI::clearAddBookBar(std::string& userInputString, std::vector
 	userInputString.clear();
 }
 
+const void LibraryGUI::limitReached()
+{
+	this->addBookBar.setSize(sf::Vector2f(this->addBookBar.getSize().x, this->addBookBar.getSize().y + 20.0f));
+	this->removBookBar.setSize(sf::Vector2f(this->removBookBar.getSize().x, this->removBookBar.getSize().y + 20.0f));
+}
+const void LibraryGUI::limitReverse()
+{
+	this->addBookBar.setSize(sf::Vector2f(this->addBookBar.getSize().x, this->addBookBar.getSize().y - 20.0f));
+	this->removBookBar.setSize(sf::Vector2f(this->removBookBar.getSize().x, this->removBookBar.getSize().y - 10.0f));
+}
+
 const bool LibraryGUI::requestShowFilters() const
 {
 	return this->showFilters;
@@ -591,7 +602,9 @@ void LibraryGUI::renderBLMS_BooksPanel(
 	std::vector<sf::RectangleShape>& checkBoxes, 
 	sf::RectangleShape& checkBox, 
 	std::vector<sf::RectangleShape>& deleteRequests, 
-	sf::RectangleShape& deleteRequest )
+	sf::RectangleShape& deleteRequest,
+	float scrollPosition,
+	float scrollIncrement )
 {
 	/*
 	  @return void
@@ -608,11 +621,6 @@ void LibraryGUI::renderBLMS_BooksPanel(
 
 	for (this->book = 0; this->book < books_Storage.size(); ++this->book)
 	{
-		if (this->book >= 28)
-		{
-			this->pollEvent();
-		}
-
 		checkBox.setOutlineThickness(2.5f);
 		checkBox.setSize(sf::Vector2f(40.0f, 40.0f));
 
@@ -627,19 +635,19 @@ void LibraryGUI::renderBLMS_BooksPanel(
 		//Adjust the book's position using the scrollPosition
 		books_Storage[this->book].setPosition(sf::Vector2f(
 			this->booksPanel.getPosition().x + 100.0f, 
-			this->booksPanel.getPosition().y + 18.0f + this->moveDown - this->scrollPosition
+			this->booksPanel.getPosition().y + 18.0f + this->moveDown - scrollPosition
 		));
 
 		//Adjust the book's marks position using the scrollPosition
 		checkBoxes[this->book].setPosition(sf::Vector2f(
 			this->booksPanel.getPosition().x + 10.0f,
-			this->booksPanel.getPosition().y + 19.0f + this->moveDown - this->scrollPosition
+			this->booksPanel.getPosition().y + 19.0f + this->moveDown - scrollPosition
 		));
 
 		//Adjust the books's delete option position using the scrollPosition
 		deleteRequests[this->book].setPosition(sf::Vector2f(
 			this->booksPanel.getPosition().x + 930.0f,
-			this->booksPanel.getPosition().y + 18.0f + this->moveDown - this->scrollPosition
+			this->booksPanel.getPosition().y + 18.0f + this->moveDown - scrollPosition
 		));
 
 		std::ifstream inputFile("BOOKS_STORAGE_CHECK.txt");
@@ -792,7 +800,7 @@ void LibraryGUI::renderBLMS_BooksPanel(
 			target->draw(deleteRequests[this->book]);
 		}
 
-		this->deleteBookButton.setPosition(sf::Vector2f(this->booksPanel.getPosition().x + 930.0f, this->booksPanel.getPosition().y + 20.0f + this->moveDown + 1.0f - this->scrollPosition));
+		this->deleteBookButton.setPosition(sf::Vector2f(this->booksPanel.getPosition().x + 930.0f, this->booksPanel.getPosition().y + 20.0f + this->moveDown + 1.0f - scrollPosition));
 
 		if (!this->deleteBookButton.getGlobalBounds().intersects(this->yourListPanel.getGlobalBounds()))
 		{
@@ -808,11 +816,10 @@ void LibraryGUI::renderBLMS_BooksPanel(
 			target->draw(this->line);
 		}
 		//Adjust the line's position
-		this->line.setPosition(sf::Vector2f(this->booksPanel.getPosition().x, this->booksPanel.getPosition().y + 9.0f + this->moveDown + 1.0f - this->scrollPosition));
+		this->line.setPosition(sf::Vector2f(this->booksPanel.getPosition().x, this->booksPanel.getPosition().y + 9.0f + this->moveDown + 1.0f - scrollPosition));
 	}
 	this->moveDown = 0.0f;
 }
-// Having issues with the scroll events for scrolling down and up with the mouse ^^^.
 
 
 void LibraryGUI::updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY)
@@ -930,34 +937,6 @@ void LibraryGUI::renderBLMS_CheckboxPanel(sf::RenderTarget* target)
 	target->draw(this->closeCheckboxPanel);
 }
 
-void LibraryGUI::pollEvent()
-{
-	/*
-	  @return void
-	  - Check real-time events.
-	*/
-
-	while (this->target->pollEvent(this->actionEvent))
-	{
-		switch (this->actionEvent.type)
-		{
-		case sf::Event::MouseWheelScrolled:
-			if (this->actionEvent.mouseWheelScroll.delta > 0)
-			{
-				if (scrollPosition > 0)
-				{
-					this->scrollPosition -= this->scrollIncrement;
-				}
-			}
-			if (this->actionEvent.mouseWheelScroll.delta < 0)
-			{
-				this->scrollPosition += this->scrollIncrement;
-			}
-			break;
-		}
-	}
-}
-
 //Private GUI functions
 // - void updateViewPanel(); WIP
 
@@ -1002,8 +981,6 @@ void LibraryGUI::initVariables()
 	this->requestToClose = false;
 	this->addBook = false; 
 	this->moveDown =  0.0f;
-	this->scrollPosition = 0.0f;
-	this->scrollIncrement = 15.0f;
 	this->book = 0;
 	this->colorChanger = sf::Color::White;
 	this->showFilters = false;
@@ -1253,7 +1230,6 @@ void LibraryGUI::initBLMS_BooksView()
 	float viewCenterX = booksPanel.getPosition().x - 200.0f + booksPanel.getSize().x / 2;
 	float viewCenterY = booksPanel.getPosition().y + booksPanel.getPosition().y / 2;
 	this->booksView.setCenter(sf::Vector2f(viewCenterX, viewCenterY));
-	this->scrollPosition = 0.0f; //Initialize scroll position
 }
 void LibraryGUI::initBLMS_YourListPanel()
 {
@@ -1421,8 +1397,8 @@ void LibraryGUI::initBLMS_tempLimitWarn()
 	this->limitWarn.setFont(this->booksFont); // Set the font you want to use
 	this->limitWarn.setCharacterSize(15); // Set the font size
 	this->limitWarn.setFillColor(sf::Color::Black); // Set the text color
-	this->limitWarn.setString("/* Book should contain from 2 - 30 characters *\\");
-	this->limitWarn.setPosition(sf::Vector2f(this->addBookBar.getPosition().x + 12.0f, this->addBookBar.getPosition().y + 203.0f));
+	this->limitWarn.setString("/* Book should contain from 2 - 40 characters. *\\ \n                     [ Not allowed symbols: /,\\ ]");
+	this->limitWarn.setPosition(sf::Vector2f(this->addBookBar.getPosition().x + 12.0f, this->addBookBar.getPosition().y + 223.0f));
 }
 
 void LibraryGUI::initBLMS_Filters()
