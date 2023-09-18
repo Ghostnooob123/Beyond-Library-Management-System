@@ -1,5 +1,5 @@
 # Beyond Library Management System
-- Is a simple library for your books where you can store them safely, filter , mark or delete them however you want.
+Is a simple library for your books where you can store them safely, filter , mark or delete them however you want.
 
 ## How to Use
 The program is safe to run but may occur a warning due the fact the program is not widely known.
@@ -20,3 +20,4 @@ Contributions to the project are welcome. Feel free to submit bug reports, featu
 ## Authors
 
 - https://github.com/Ghostnooob123
+- https://www.linkedin.com/in/ivo-rahnev-382778264/
