@@ -613,6 +613,10 @@ void LibraryEngine::removeBook()
 			{
 				continue;
 			}
+			else
+			{
+				//TODO: Print that the book is not found.Then clear the input and start again typing.
+			}
 			lines.insert(line);
 		}
 

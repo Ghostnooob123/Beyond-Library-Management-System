@@ -106,8 +106,8 @@ const void LibraryGUI::limitReached()
 }
 const void LibraryGUI::limitReverse()
 {
-	this->addBookBar.setSize(sf::Vector2f(this->addBookBar.getSize().x, this->addBookBar.getSize().y - 20.0f));
-	this->removBookBar.setSize(sf::Vector2f(this->removBookBar.getSize().x, this->removBookBar.getSize().y - 10.0f));
+	this->addBookBar.setSize(sf::Vector2f(350.0f, 60.0f));
+	this->removBookBar.setSize(sf::Vector2f(350.0f, 60.0f));
 }
 
 const bool LibraryGUI::requestShowFilters() const
