@@ -25,7 +25,6 @@ public:
 	//Public Engine functions
 	void update();
 	void render();
-	void renderBLMS_BooksPanel();
 private:
 	//Private Engine functions
 	void pollEvents();

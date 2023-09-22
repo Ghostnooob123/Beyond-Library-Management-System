@@ -88,6 +88,18 @@ const void LibraryGUI::changeDeleteBookRequest()
 	this->isBookDelete = false;
 }
 
+const bool LibraryGUI::getPanelBounds(sf::Vector2f& mousePosView) const
+{
+	if (this->booksPanel.getGlobalBounds().contains(mousePosView))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 const void LibraryGUI::clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage)
 {
 	removeBookInput_Storage.clear();
@@ -937,38 +949,6 @@ void LibraryGUI::renderBLMS_CheckboxPanel(sf::RenderTarget* target)
 	target->draw(this->closeCheckboxPanel);
 }
 
-//Private GUI functions
-// - void updateViewPanel(); WIP
-
-//void LibraryGUI::updateViewPanel()
-//{
-//	/*
-//	  @return void
-//	  - Update the view's position to stay within bounds.
-//	  - Update the books view by scrolling down or up.
-//	*/
-//
-//	// Calculate the top and bottom bounds of your content
-//	float contentTop = this->booksPanel.getPosition().y;
-//	float contentBottom = this->booksPanel.getPosition().y + this->booksPanel.getSize().y;
-//
-//	// Calculate the top and bottom bounds of the view
-//	float viewTop = this->booksView.getCenter().y - this->booksView.getSize().y / 2;
-//	float viewBottom = this->booksView.getCenter().y + this->booksView.getSize().y / 2;
-//
-//	// Update the view's position to stay within the bounds of your content
-//	if (viewTop < contentTop) {
-//		// Adjust the view's center to keep it within the top bounds
-//		this->booksView.setCenter(this->booksView.getCenter().x, this->booksView.getSize().y / 2);
-//	}
-//	else if (viewBottom > contentBottom) {
-//		// Adjust the view's center to keep it within the bottom bounds
-//		this->booksView.setCenter(this->booksView.getCenter().x, contentBottom - this->booksView.getSize().y / 2);
-//	}
-//}
-
-//
-
 //Private functions
 void LibraryGUI::initVariables()
 {
@@ -1212,7 +1192,7 @@ void LibraryGUI::initBLMS_InfoPanel()
 	this->UI_InfoPanel.setFillColor(sf::Color::Black);
 	this->UI_InfoPanel.setCharacterSize(17);
 	std::string Info;
-	Info = "* The purpose of this program is to make it easier to save your own books in one big collection, \n where you can filter them : Sort, Mark, Remove.\n\n - \"Open Your List\", this button opens your list of books. \n - \"New Book\", this button allows you to add new book to your list. \n - \"Filters\", this button allows you to filter your list of books. \n - \"Exit\", this button closes the program and saves your data. \n - \"Close Your List\", this button closes the list of books you have.\n - \"Remove\", this button allows you to remove ( Delete ) book from the list.\n   (* Keep in mind you will see a warning when removing a book. *) \n\n -If there is any issues, bugs, errors reports or just want to suggest improvements\n feel free to send feedback: \n Email: ivorahnev15@gmail.com \n Discord: Ghostnooob123\n";
+	Info = "* The purpose of this program is to make it easier to save your own books in one big collection, \n where you can filter them : Sort, Mark, Remove.\n\n - \"Open Your List\", this button opens your list of books. \n - \"New Book\", this button allows you to add new book to your list. \n - \"Filters\", this button allows you to filter your list of books: \n * Filter adding special marker to your book \n      - Green (Finished the book) \n      - Yellow(Book you are reading at the moment) \n      - Red(Book you haven't started)  \n * Filter the books in order from A -> Z or Z -> A.\n - \"Exit\", this button closes the program and saves your data. \n - \"Close Your List\", this button closes the list of books you have.\n - \"Remove\", this button allows you to remove ( Delete ) book from the list.\n   (* Keep in mind you will see a warning when removing a book. *) \n\n -If there is any issues, bugs, errors reports or just want to suggest improvements\n feel free to send feedback: \n Email: ivorahnev15@gmail.com \n Discord: Ghostnooob123\n";
 
 	this->UI_InfoPanel.setString(Info);
 	this->UI_InfoPanel.setPosition(sf::Vector2f(this->InfoPanel.getPosition().x + 4.0f, this->InfoPanel.getPosition().y + 25.0f));
@@ -1250,7 +1230,7 @@ void LibraryGUI::initBLMS_YourListPanel()
 	this->UI_yourListPanel.setFillColor(sf::Color::Black);
 	this->UI_yourListPanel.setCharacterSize(40);
 	this->UI_yourListPanel.setString(" Your list ");
-	this->UI_yourListPanel.setPosition(this->yourListPanel.getPosition().x + 450.0f, this->yourListPanel.getPosition().y + 5.0f);
+	this->UI_yourListPanel.setPosition(this->yourListPanel.getPosition().x + 445.0f, this->yourListPanel.getPosition().y + 5.0f);
 }
 void LibraryGUI::initBLMS_newLine()
 {

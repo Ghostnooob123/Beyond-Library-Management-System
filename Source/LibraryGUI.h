@@ -29,6 +29,7 @@ public:
 	const bool requestDeleteBook() const;
 	const std::string getBookToDelete() const;
 	const void changeDeleteBookRequest();
+	const bool getPanelBounds(sf::Vector2f& mousePosView) const;
 
 	const void clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage);
 	const void clearAddBookBar(std::string& userInputString, std::vector<sf::Text>& newBookInput_Storage);
@@ -99,13 +100,10 @@ public:
 	void renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf::Text>& removeBookInput_Storage);
 
 private:
-	//Private GUI functions
-	void updateViewPanel();
-
 	//Variables
-	//Window
+	  //Window
 	sf::RenderWindow* target;
-	//Event 
+	  //Event 
 	sf::Event actionEvent;
 	  //Buttons
 	sf::ConvexShape openLibraryButton;

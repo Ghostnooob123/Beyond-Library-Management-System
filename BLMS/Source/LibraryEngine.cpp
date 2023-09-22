@@ -35,6 +35,8 @@ void LibraryEngine::update()
 	  - Poll events.
 	  - Update mouse position.
 	  - Update important buttons.
+	  - Update filters.
+	  - Update info panel.
 	  - Update books panel.
 	*/
 	this->updateLibrary();
@@ -91,11 +93,13 @@ void LibraryEngine::render()
 	  - Clear old frames.
 	  - Display important buttons.
 	  - Display books panel.
+	  - Display filters.
+	  - Display info panel.
 	  - Display frame in the window.
 	*/
 
 	//Clear the window
-	this->window->clear(sf::Color(255, 156, 242));
+	this->window->clear(sf::Color(250, 137, 234));
 
 	//Render  Open Library button and Exit button
 	this->libraryGUI->renderBLMS_ButtonOpenLibrary(this->window);
@@ -183,16 +187,19 @@ void LibraryEngine::pollEvents()
 			}
 			break;
 		case sf::Event::MouseWheelScrolled:
-			if (this->eventAction.mouseWheelScroll.delta > 0)
+			if (this->libraryGUI->getPanelBounds(this->mousePosView))
 			{
-				if (this->scrollPosition > 0)
+				if (this->eventAction.mouseWheelScroll.delta > 0)
 				{
-					this->scrollPosition -= this->scrollIncrement;
+					if (this->scrollPosition > 0)
+					{
+						this->scrollPosition -= this->scrollIncrement;
+					}
 				}
-			}
-			if (this->eventAction.mouseWheelScroll.delta < 0)
-			{
-				this->scrollPosition += this->scrollIncrement;
+				if (this->eventAction.mouseWheelScroll.delta < 0)
+				{
+					this->scrollPosition += this->scrollIncrement;
+				}
 			}
 			break;
 		case sf::Event::TextEntered:
@@ -203,6 +210,11 @@ void LibraryEngine::pollEvents()
 					{
 						//Handle backspace (remove last character)
 						this->userInputString.pop_back();
+						this->newBookInput_Storage.clear();
+					}
+					else if (this->eventAction.text.unicode == '\\' || this->eventAction.text.unicode == '/')
+					{
+						this->userInputString.clear();
 						this->newBookInput_Storage.clear();
 					}
 					else if (this->eventAction.text.unicode == '\r')
@@ -307,6 +319,11 @@ void LibraryEngine::pollEvents()
 					{
 						//Handle backspace (remove last character)
 						this->removeInputString.pop_back();
+						this->removeBookInput_Storage.clear();
+					}
+					else if (this->eventAction.text.unicode == '\\' || this->eventAction.text.unicode == '/')
+					{
+						this->removeInputString.clear();
 						this->removeBookInput_Storage.clear();
 					}
 					else if (this->eventAction.text.unicode == '\r')
