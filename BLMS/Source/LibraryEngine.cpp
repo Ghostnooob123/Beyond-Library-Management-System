@@ -233,6 +233,17 @@ void LibraryEngine::pollEvents()
 					{
 						//Handle backspace (remove last character)
 						this->userInputString.pop_back();
+
+						if (this->userInputString.empty())
+						{
+							this->userInputString.push_back('<');
+						}
+						if (this->userInputString.length() >= 1)
+						{
+							this->userInputString.pop_back();
+							this->userInputString.push_back('<');
+						}
+
 						this->newBookInput_Storage.clear();
 					}
 					else if (this->eventAction.text.unicode == '\\' || this->eventAction.text.unicode == '/')
@@ -298,6 +309,7 @@ void LibraryEngine::pollEvents()
 						this->newLine = 0;
 						this->typeSymbol = 0;
 						this->libraryGUI->changeRequestAddBook();
+						this->userInputString.clear();
 					}
 					else {
 						//Check if whole new string is bigger than size capacity
@@ -332,7 +344,11 @@ void LibraryEngine::pollEvents()
 							std::toupper(this->eventAction.text.unicode);
 						}
 
-						if (this->userInputString.length() >= 2)
+						if (this->userInputString.front() == '<')
+						{
+							this->userInputString.erase(0, 1);
+						}
+						if (this->userInputString.length() >= 1)
 						{
 							this->userInputString.pop_back();
 						}
@@ -355,6 +371,17 @@ void LibraryEngine::pollEvents()
 					{
 						//Handle backspace (remove last character)
 						this->removeInputString.pop_back();
+
+						if (this->removeInputString.empty())
+						{
+							this->removeInputString.push_back('<');
+						}
+						if (this->removeInputString.length() >= 1)
+						{
+							this->removeInputString.pop_back();
+							this->removeInputString.push_back('<');
+						}
+
 						this->removeBookInput_Storage.clear();
 					}
 					else if (this->eventAction.text.unicode == '\\' || this->eventAction.text.unicode == '/')
@@ -412,6 +439,7 @@ void LibraryEngine::pollEvents()
 						this->newLine = 0;
 						this->typeSymbol = 0;
 						this->libraryGUI->changeDeleteBookRequest();
+						this->removeInputString.clear();
 					}
 					else {
 						//Check if whole new string is bigger than size capacity
@@ -442,10 +470,15 @@ void LibraryEngine::pollEvents()
 							std::toupper(this->eventAction.text.unicode);
 						}
 
+						if (this->removeInputString.front() == '<')
+						{
+							this->removeInputString.erase(0, 1);
+						}
 						if (this->removeInputString.length() >= 1)
 						{
 							this->removeInputString.pop_back();
 						}
+
 						this->removeInputString += static_cast<char>(this->eventAction.text.unicode);
 						this->removeBookInput_Storage.clear();
 						this->removeInputString.push_back('<');
