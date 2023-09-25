@@ -68,6 +68,8 @@ private:
 	size_t newLine;
 	char forbiddenSymbol;
 
+	size_t typeSymbol;
+
 	float scrollPosition;
 	float scrollIncrement;
 

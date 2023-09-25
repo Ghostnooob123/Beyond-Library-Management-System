@@ -44,25 +44,28 @@ void LibraryEngine::update()
 	this->updateMousePos();
 
 	//Update Open Library button and Exit button
-	this->libraryGUI->updateBLMS_ButtonOpenLibrary(this->mousePosView, this->centerX, this->centerY);
+	this->libraryGUI->updateBLMS_ButtonOpenLibrary(this->mousePosView, this->centerX, this->centerY, this->typeSymbol);
 	this->libraryGUI->updateBLMS_ButtonExit(this->mousePosView, this->centerX, this->centerY);
 
 	if (this->libraryGUI->requestOpenLibrary())
 	{
 		//Update Close button
-		this->libraryGUI->updateBLMS_ButtonCloseLibrary(this->mousePosView, this->centerX, this->centerY);
+		this->libraryGUI->updateBLMS_ButtonCloseLibrary(this->mousePosView, this->centerX, this->centerY, this->typeSymbol);
 
-		//Update add new book button
-		this->libraryGUI->updateBLMS_ButtonAddBook(this->mousePosView, this->centerX, this->centerY);
+		if (!this->libraryGUI->requestDeleteBook())
+		{
+			//Update add new book button
+			this->libraryGUI->updateBLMS_ButtonAddBook(this->mousePosView, this->centerX, this->centerY, this->typeSymbol);
+		}
 
 		//Update info button 
-		this->libraryGUI->updateBLMS_ButtonInfo(this->mousePosView, this->centerX, this->centerY);
+		this->libraryGUI->updateBLMS_ButtonInfo(this->mousePosView, this->centerX, this->centerY, this->typeSymbol);
 
 		//Update the books panel if requested
 		this->libraryGUI->updateBLMS_BooksPanel();
 
 		//Update filter button and his filters
-		this->libraryGUI->updateBLMS_ButtonFilter(this->mousePosView, this->centerX, this->centerY);
+		this->libraryGUI->updateBLMS_ButtonFilter(this->mousePosView, this->centerX, this->centerY, this->typeSymbol);
 		if (this->libraryGUI->requestShowFilters())
 		{
 			this->libraryGUI->updateBLMS_Filters(this->mousePosView);
@@ -73,7 +76,7 @@ void LibraryEngine::update()
 		}
 		if (this->libraryGUI->requestDeleteBook())
 		{
-			this->libraryGUI->updateBLMS_RemoveBook(this->mousePosView, this->centerX, this->centerY);
+			this->libraryGUI->updateBLMS_RemoveBook(this->mousePosView, this->centerX, this->centerY, this->typeSymbol);
 		}
 	}
 	if (this->libraryGUI->requestInfoPanel())
@@ -115,6 +118,16 @@ void LibraryEngine::render()
 		{
 			this->libraryGUI->clearAddBookBar(this->userInputString, this->newBookInput_Storage);
 		}
+		else
+		{
+			if (this->typeSymbol != 1 && this->typeSymbol != 2)
+			{
+				sf::Text userInputText = this->libraryGUI->userInput();
+				userInputText.setString("<");
+				this->newBookInput_Storage.push_back(userInputText);
+				this->typeSymbol = 1;
+			}
+		}
 		this->libraryGUI->renderBLMS_ButtonAddBook(this->window, this->newBookInput_Storage);
 
 		//Render info button
@@ -130,7 +143,8 @@ void LibraryEngine::render()
 			this->deleteRequests, 
 			this->deleteRequest,
 			this->scrollPosition,
-			this->scrollIncrement
+			this->scrollIncrement,
+			this->typeSymbol
 		);
 
 		//Render Filter button and his filters
@@ -146,9 +160,18 @@ void LibraryEngine::render()
 		if (!this->libraryGUI->requestDeleteBook())
 		{
 			this->libraryGUI->clearRemoveBookBar(this->removeInputString, this->removeBookInput_Storage);
+
 		}
 		else
 		{
+			if (this->typeSymbol != 1 && this->typeSymbol != 2)
+			{
+				sf::Text userInputText = this->libraryGUI->userInput();
+				userInputText.setString("<");
+				this->removeBookInput_Storage.push_back(userInputText);
+				this->typeSymbol = 1;
+			}
+
 			this->libraryGUI->renderBLMS_RemoveBook(this->window, this->removeBookInput_Storage);
 		}
 	}
@@ -221,7 +244,6 @@ void LibraryEngine::pollEvents()
 					{ // Enter key pressed
 					  //Clear the input string for new input when Enter is pressed
 					  //Save the input as new book and add it to the storage.
-						this->userInputString.clear();
 						std::string tempStr;
 						tempStr = this->newBookInput_Storage.back().getString();
 
@@ -233,6 +255,12 @@ void LibraryEngine::pollEvents()
 							{
 								str += c;
 							}
+						}
+
+						if (str.back() == '<')
+						{
+							str.pop_back();
+							this->newBookInput_Storage.pop_back();
 						}
 
 						if (str.back() == ' ')
@@ -268,6 +296,7 @@ void LibraryEngine::pollEvents()
 						this->newBookInput_Storage.clear();
 						this->libraryGUI->limitReverse();
 						this->newLine = 0;
+						this->typeSymbol = 0;
 						this->libraryGUI->changeRequestAddBook();
 					}
 					else {
@@ -302,9 +331,16 @@ void LibraryEngine::pollEvents()
 						{
 							std::toupper(this->eventAction.text.unicode);
 						}
+
+						if (this->userInputString.length() >= 2)
+						{
+							this->userInputString.pop_back();
+						}
+
 						//Append the entered character to the input string
 						this->userInputString += static_cast<char>(this->eventAction.text.unicode);
 						this->newBookInput_Storage.clear();
+						this->userInputString.push_back('<');
 					}
 					//Update the text in the GUI
 					sf::Text userInputText = this->libraryGUI->userInput();
@@ -344,6 +380,12 @@ void LibraryEngine::pollEvents()
 							}
 						}
 
+						if (str.back() == '<')
+						{
+							str.pop_back();
+							this->removeInputString.pop_back();
+						}
+
 						if (str == this->libraryGUI->getBookToDelete())
 						{
 							sf::Text userInputText = this->libraryGUI->printBook();
@@ -368,6 +410,7 @@ void LibraryEngine::pollEvents()
 						this->libraryGUI->limitReverse();
 						this->checkBoxes.clear();
 						this->newLine = 0;
+						this->typeSymbol = 0;
 						this->libraryGUI->changeDeleteBookRequest();
 					}
 					else {
@@ -398,8 +441,14 @@ void LibraryEngine::pollEvents()
 						{
 							std::toupper(this->eventAction.text.unicode);
 						}
+
+						if (this->removeInputString.length() >= 1)
+						{
+							this->removeInputString.pop_back();
+						}
 						this->removeInputString += static_cast<char>(this->eventAction.text.unicode);
 						this->removeBookInput_Storage.clear();
+						this->removeInputString.push_back('<');
 					}
 					//Update the text in the GUI
 					sf::Text userInputText = this->libraryGUI->userInput();
@@ -472,7 +521,7 @@ void LibraryEngine::orderFrom_A_To_Z()
 		std::cerr << "[ERROR] can't open BOOKS_STORAGE.txt\n";
 	}
 
-	std::set<std::string> lines;
+	std::set<std::string, std::less<std::string>> lines;
 	std::string line;
 
 	while (std::getline(inputFile, line)) 

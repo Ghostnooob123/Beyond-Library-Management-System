@@ -150,7 +150,7 @@ const sf::Text LibraryGUI::printBook() const
 
 //Public GUI functions
    //Open Library Update & Render methods
-void LibraryGUI::updateBLMS_ButtonOpenLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_ButtonOpenLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
 {
 	/*
 	  @return void
@@ -202,6 +202,7 @@ void LibraryGUI::updateBLMS_ButtonOpenLibrary(sf::Vector2f& mousePosView, float&
 	if (this->openLibraryButton.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		this->isLibraryOpen = true;
+		typeSymbol = 0;
 	}
 
 	if (this->isLibraryOpen)
@@ -226,7 +227,7 @@ void LibraryGUI::renderBLMS_ButtonOpenLibrary(sf::RenderTarget* target)
 }
 
    //Add book Update & Render methods
-void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
 {
 	/*
 	  @return void
@@ -285,6 +286,7 @@ void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& cen
 	if (this->closeAddBookBar.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		this->addBook = false;
+		typeSymbol = 0;
 	}
 
 	if (this->addBook)
@@ -388,7 +390,7 @@ void LibraryGUI::renderBLMS_ButtonExit(sf::RenderTarget* target)
 }
 
    //Filter button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
 {
 	/*
 		  @return void
@@ -442,6 +444,8 @@ void LibraryGUI::updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& cent
 		this->addBook = false;
 		this->showHowToUse = false;
 		this->isBookDelete = false;
+
+		typeSymbol = 0;
 	}
 }
 void LibraryGUI::renderBLMS_ButtonFilter(sf::RenderTarget* target)
@@ -458,7 +462,7 @@ void LibraryGUI::renderBLMS_ButtonFilter(sf::RenderTarget* target)
 }
 
    //Close library button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
 {
 	/*
 		  @return void
@@ -514,6 +518,8 @@ void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float
 		this->showHowToUse = false;
 		this->addBook = false;
 		this->isBookDelete = false;
+
+		typeSymbol = 0;
 	}
 }
 void LibraryGUI::renderBLMS_ButtonCloseLibrary(sf::RenderTarget* target)
@@ -529,7 +535,7 @@ void LibraryGUI::renderBLMS_ButtonCloseLibrary(sf::RenderTarget* target)
 }
 
    //Info button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
 {
 	/*
 		  @return void
@@ -585,6 +591,8 @@ void LibraryGUI::updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& center
 		this->showFilters = false;
 		this->isBookDelete = false;
 		this->addBook = false;
+
+		typeSymbol = 0;
 	}
 }
 void LibraryGUI::renderBLMS_ButtonInfo(sf::RenderTarget* target)
@@ -616,7 +624,8 @@ void LibraryGUI::renderBLMS_BooksPanel(
 	std::vector<sf::RectangleShape>& deleteRequests, 
 	sf::RectangleShape& deleteRequest,
 	float scrollPosition,
-	float scrollIncrement )
+	float scrollIncrement,
+	size_t& typeSymbol )
 {
 	/*
 	  @return void
@@ -792,7 +801,7 @@ void LibraryGUI::renderBLMS_BooksPanel(
 							// Add the new book with the updated color.
 							outputFile << color << " - " << name << '\n';
 						}
-
+						this->isColorPicker = false;
 						outputFile.close();
 					}
 				}
@@ -803,10 +812,13 @@ void LibraryGUI::renderBLMS_BooksPanel(
 
 		if (!deleteRequests[this->book].getGlobalBounds().intersects(this->yourListPanel.getGlobalBounds()))
 		{
-			if (deleteRequests[this->book].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			if (!this->requestAddBook())
 			{
-				this->isBookDelete = true;
-				this->bookToDelete = books_Storage[this->book].getString();
+				if (deleteRequests[this->book].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					this->isBookDelete = true;
+					this->bookToDelete = books_Storage[this->book].getString();
+				}
 			}
 			deleteRequests[this->book].setFillColor(sf::Color(235, 241, 245));
 			target->draw(deleteRequests[this->book]);
@@ -834,15 +846,17 @@ void LibraryGUI::renderBLMS_BooksPanel(
 }
 
 
-void LibraryGUI::updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
 {
 	if (this->closeRemoveBookBar.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		this->isBookDelete = false;
+		typeSymbol = 0;
 	}
 	if (this->isBookDelete)
 	{
 		this->addBook = false;
+		this->isColorPicker = false;
 		this->removBookBar.setPosition(sf::Vector2f(centerX - 735.0f, centerY - 310.0f));
 		this->warningPanel.setPosition(sf::Vector2f(centerX - 725.0f, centerY - 388.0f));
 	}

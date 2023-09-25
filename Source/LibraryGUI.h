@@ -48,11 +48,11 @@ public:
 	//Public GUI functions
 	//Buttons
 	   //Open library button Update & Render methods
-	void updateBLMS_ButtonOpenLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_ButtonOpenLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonOpenLibrary(sf::RenderTarget* target);
 
 	   //Add book button Update & Render methods
-	void updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonAddBook(sf::RenderTarget* target, std::vector<sf::Text>& newBookInput_Storage);
 
 	   //Exit button Update & Render methods
@@ -60,15 +60,15 @@ public:
 	void renderBLMS_ButtonExit(sf::RenderTarget* target);
 
 	   //Filter button Update & Render methods
-	void updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonFilter(sf::RenderTarget* target);
 
 	   //Close library button Update & Render methods
-	void updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonCloseLibrary(sf::RenderTarget* target);
 
 	   //Info button Update & Render methods
-	void updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonInfo(sf::RenderTarget* target);
 
 	//Panels
@@ -93,10 +93,11 @@ public:
 		std::vector<sf::RectangleShape>& deleteRequests, 
 		sf::RectangleShape& deleteReqest,
 		float scrollPosition,
-	    float scrollIncrement
+	    float scrollIncrement,
+		size_t& typeSymbol
 	);
 
-	void updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
 	void renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf::Text>& removeBookInput_Storage);
 
 private:
