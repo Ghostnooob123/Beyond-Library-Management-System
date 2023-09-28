@@ -29,7 +29,9 @@ public:
 	const bool requestDeleteBook() const;
 	const std::string getBookToDelete() const;
 	const void changeDeleteBookRequest();
-	const bool getPanelBounds(sf::Vector2f& mousePosView) const;
+	const bool getPanelBounds(const sf::Vector2f& mousePosView) const;
+	const bool requestCloseLibrary() const;
+	const void changeRequestCloseLibrary();
 
 	const void clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage);
 	const void clearAddBookBar(std::string& userInputString, std::vector<sf::Text>& newBookInput_Storage);
@@ -52,34 +54,34 @@ public:
 	void renderBLMS_ButtonOpenLibrary(sf::RenderTarget* target);
 
 	   //Add book button Update & Render methods
-	void updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
+	void updateBLMS_ButtonAddBook(const sf::Vector2f& mousePosView,const float& centerX,const float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonAddBook(sf::RenderTarget* target, std::vector<sf::Text>& newBookInput_Storage);
 
 	   //Exit button Update & Render methods
-	void updateBLMS_ButtonExit(sf::Vector2f& mousePosView, float& centerX, float& centerY);
+	void updateBLMS_ButtonExit(const sf::Vector2f& mousePosView,const float& centerX,const float& centerY);
 	void renderBLMS_ButtonExit(sf::RenderTarget* target);
 
 	   //Filter button Update & Render methods
-	void updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
+	void updateBLMS_ButtonFilter(const sf::Vector2f& mousePosView,const float& centerX,const float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonFilter(sf::RenderTarget* target);
 
 	   //Close library button Update & Render methods
-	void updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
+	void updateBLMS_ButtonCloseLibrary(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonCloseLibrary(sf::RenderTarget* target);
 
 	   //Info button Update & Render methods
-	void updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
+	void updateBLMS_ButtonInfo(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol);
 	void renderBLMS_ButtonInfo(sf::RenderTarget* target);
 
 	//Panels
-	void updateBLMS_InfoPanel(sf::Vector2f& mousePosView);
+	void updateBLMS_InfoPanel(const sf::Vector2f& mousePosView);
 	void renderBLMS_InfoPanel(sf::RenderTarget* target);
 
 	  //Filter Panel Update & Render methods
-	void updateBLMS_Filters(sf::Vector2f& mousePosView);
+	void updateBLMS_Filters(const sf::Vector2f& mousePosView);
 	void renderBLMS_Filters(sf::RenderTarget* target);
 
-	void updateBLMS_CheckboxPanel(sf::Vector2f& mousePosView);
+	void updateBLMS_CheckboxPanel(const sf::Vector2f& mousePosView);
 	void renderBLMS_CheckboxPanel(sf::RenderTarget* target);
 
 	   //Books panel Update & Render methods
@@ -97,7 +99,7 @@ public:
 		size_t& typeSymbol
 	);
 
-	void updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol);
+	void updateBLMS_RemoveBook(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol);
 	void renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf::Text>& removeBookInput_Storage);
 
 private:
@@ -199,6 +201,8 @@ private:
 	sf::Color colorChanger;
 	bool showHowToUse;
 	float increaseBar;
+
+	bool closeLibrary;
 
 	//Private functions
 	void initVariables();

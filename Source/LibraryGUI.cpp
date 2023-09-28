@@ -88,7 +88,7 @@ const void LibraryGUI::changeDeleteBookRequest()
 	this->isBookDelete = false;
 }
 
-const bool LibraryGUI::getPanelBounds(sf::Vector2f& mousePosView) const
+const bool LibraryGUI::getPanelBounds(const sf::Vector2f& mousePosView) const
 {
 	if (this->booksPanel.getGlobalBounds().contains(mousePosView))
 	{
@@ -98,6 +98,15 @@ const bool LibraryGUI::getPanelBounds(sf::Vector2f& mousePosView) const
 	{
 		return false;
 	}
+}
+
+const bool LibraryGUI::requestCloseLibrary() const
+{
+	return this->closeLibrary;
+}
+const void LibraryGUI::changeRequestCloseLibrary()
+{
+	this->closeLibrary = false;
 }
 
 const void LibraryGUI::clearRemoveBookBar(std::string& removeInputString, std::vector<sf::Text>& removeBookInput_Storage)
@@ -227,7 +236,7 @@ void LibraryGUI::renderBLMS_ButtonOpenLibrary(sf::RenderTarget* target)
 }
 
    //Add book Update & Render methods
-void LibraryGUI::updateBLMS_ButtonAddBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
+void LibraryGUI::updateBLMS_ButtonAddBook(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol)
 {
 	/*
 	  @return void
@@ -323,7 +332,7 @@ void LibraryGUI::renderBLMS_ButtonAddBook(sf::RenderTarget* target, std::vector<
 }
 
    //Exit button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonExit(sf::Vector2f& mousePosView, float& centerX, float& centerY)
+void LibraryGUI::updateBLMS_ButtonExit(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY)
 {
 	/*
 	  @return void
@@ -390,7 +399,7 @@ void LibraryGUI::renderBLMS_ButtonExit(sf::RenderTarget* target)
 }
 
    //Filter button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonFilter(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
+void LibraryGUI::updateBLMS_ButtonFilter(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol)
 {
 	/*
 		  @return void
@@ -462,7 +471,7 @@ void LibraryGUI::renderBLMS_ButtonFilter(sf::RenderTarget* target)
 }
 
    //Close library button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
+void LibraryGUI::updateBLMS_ButtonCloseLibrary(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol)
 {
 	/*
 		  @return void
@@ -478,7 +487,7 @@ void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float
 	//Close list & update highlighter
 	if (this->closeLibraryButton.getGlobalBounds().contains(mousePosView))
 	{
-		this->closeLibraryButton.setPosition(sf::Vector2f(centerX - 1125.0f, centerY - 370.0f));
+		this->closeLibraryButton.setPosition(sf::Vector2f(centerX - 1125.0f, centerY + 50.0f));
 
 		highlighterWidth = 30.0f;
 		highlighterHeight = 65.0f;
@@ -492,11 +501,11 @@ void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float
 		this->highLighter_ButtonCloseLibrary.setPoint(1, sf::Vector2f(400 + highlighterWidth / 2, 300 - highlighterHeight / 2)); // Top-right
 		this->highLighter_ButtonCloseLibrary.setPoint(2, sf::Vector2f(450 + highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-right
 		this->highLighter_ButtonCloseLibrary.setPoint(3, sf::Vector2f(450 - highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-left
-		this->highLighter_ButtonCloseLibrary.setPosition(sf::Vector2f(centerX - 960.0f, centerY - 370.0f));
+		this->highLighter_ButtonCloseLibrary.setPosition(sf::Vector2f(centerX - 985.0f, centerY + 50.0f));
 	}
 	else
 	{
-		this->closeLibraryButton.setPosition(sf::Vector2f(centerX - 1130.0f, centerY - 370.0f));
+		this->closeLibraryButton.setPosition(sf::Vector2f(centerX - 1150.0f, centerY + 50.0f));
 
 		//Highlither UI by default
 		this->highLighter_ButtonCloseLibrary.setFillColor(sf::Color(227, 107, 211));
@@ -508,7 +517,7 @@ void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float
 		this->highLighter_ButtonCloseLibrary.setPoint(1, sf::Vector2f(400 + highlighterWidth / 2, 300 - highlighterHeight / 2)); // Top-right
 		this->highLighter_ButtonCloseLibrary.setPoint(2, sf::Vector2f(450 + highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-right
 		this->highLighter_ButtonCloseLibrary.setPoint(3, sf::Vector2f(450 - highlighterWidth / 2, 300 + highlighterHeight / 2)); // Bottom-left
-		this->highLighter_ButtonCloseLibrary.setPosition(sf::Vector2f(centerX - 980.0f, centerY - 370.0f));
+		this->highLighter_ButtonCloseLibrary.setPosition(sf::Vector2f(centerX - 1000.0f, centerY + 50.0f));
 	}
 
 	if (this->closeLibraryButton.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -518,6 +527,8 @@ void LibraryGUI::updateBLMS_ButtonCloseLibrary(sf::Vector2f& mousePosView, float
 		this->showHowToUse = false;
 		this->addBook = false;
 		this->isBookDelete = false;
+
+		this->closeLibrary = true;
 
 		typeSymbol = 0;
 	}
@@ -535,7 +546,7 @@ void LibraryGUI::renderBLMS_ButtonCloseLibrary(sf::RenderTarget* target)
 }
 
    //Info button Update & Render methods
-void LibraryGUI::updateBLMS_ButtonInfo(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
+void LibraryGUI::updateBLMS_ButtonInfo(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol)
 {
 	/*
 		  @return void
@@ -652,6 +663,11 @@ void LibraryGUI::renderBLMS_BooksPanel(
 		deleteRequest.setSize(sf::Vector2f(100.0f, 40.0f));
 
 		deleteRequests.push_back(deleteRequest);
+
+		if (books_Storage[this->book].getString().isEmpty())
+		{
+			continue;
+		}
 
 		//Adjust the book's position using the scrollPosition
 		books_Storage[this->book].setPosition(sf::Vector2f(
@@ -846,7 +862,7 @@ void LibraryGUI::renderBLMS_BooksPanel(
 }
 
 
-void LibraryGUI::updateBLMS_RemoveBook(sf::Vector2f& mousePosView, float& centerX, float& centerY, size_t& typeSymbol)
+void LibraryGUI::updateBLMS_RemoveBook(const sf::Vector2f& mousePosView, const float& centerX, const float& centerY, size_t& typeSymbol)
 {
 	if (this->closeRemoveBookBar.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
@@ -879,7 +895,7 @@ void LibraryGUI::renderBLMS_RemoveBook(sf::RenderTarget* target, std::vector<sf:
 }
 
 //Panels
-void LibraryGUI::updateBLMS_InfoPanel(sf::Vector2f& mousePosView)
+void LibraryGUI::updateBLMS_InfoPanel(const sf::Vector2f& mousePosView)
 {
 	if (this->closeInfoPanel.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
@@ -893,7 +909,7 @@ void LibraryGUI::renderBLMS_InfoPanel(sf::RenderTarget* target)
 	target->draw(this->UI_InfoPanel);
 }
  //Filters
-void LibraryGUI::updateBLMS_Filters(sf::Vector2f& mousePosView)
+void LibraryGUI::updateBLMS_Filters(const sf::Vector2f& mousePosView)
 {
 	if (this->checkFilter.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
@@ -929,7 +945,7 @@ void LibraryGUI::renderBLMS_Filters(sf::RenderTarget* target)
 	target->draw(this->UI_orderZ_A_Filter);
 }
 
-void LibraryGUI::updateBLMS_CheckboxPanel(sf::Vector2f& mousePosView)
+void LibraryGUI::updateBLMS_CheckboxPanel(const sf::Vector2f& mousePosView)
 {
 	for (size_t i = 0; i < this->checks.size(); ++i)
 	{
@@ -1135,7 +1151,7 @@ void LibraryGUI::initBLMS_ButtonCloseLibrary()
 	this->UI_CloseLibraryButton.setFillColor(sf::Color::Black);
 	this->UI_CloseLibraryButton.setCharacterSize(20);
 	this->UI_CloseLibraryButton.setString(" Close Your List ");
-	this->UI_CloseLibraryButton.setPosition(this->closeLibraryButton.getPosition().x + 10.0f, this->closeLibraryButton.getPosition().y + 365.0f);
+	this->UI_CloseLibraryButton.setPosition(this->closeLibraryButton.getPosition().x + 3.0f, this->closeLibraryButton.getPosition().y + 788.0f);
 }
 void LibraryGUI::initBLMS_ButtonInfoHowToUse()
 {
@@ -1189,7 +1205,7 @@ void LibraryGUI::initBLMS_InfoPanel()
 
 	//Info panel by deafult
 	this->InfoPanel.setSize(sf::Vector2f(800.0f, 500.0f));
-	this->InfoPanel.setPosition(sf::Vector2f(this->booksPanel.getPosition().x, this->booksPanel.getPosition().y + 130.0f));
+	this->InfoPanel.setPosition(sf::Vector2f(this->booksPanel.getPosition().x - 50.0f, this->booksPanel.getPosition().y + 130.0f));
 	this->InfoPanel.setFillColor(sf::Color(235, 241, 245));
 	this->InfoPanel.setOutlineColor(sf::Color::Black);
 	this->InfoPanel.setOutlineThickness(2.0f);
@@ -1206,7 +1222,7 @@ void LibraryGUI::initBLMS_InfoPanel()
 	this->UI_InfoPanel.setFillColor(sf::Color::Black);
 	this->UI_InfoPanel.setCharacterSize(17);
 	std::string Info;
-	Info = "* The purpose of this program is to make it easier to save your own books in one big collection, \n where you can filter them : Sort, Mark, Remove.\n\n - \"Open Your List\", this button opens your list of books. \n - \"New Book\", this button allows you to add new book to your list. \n - \"Filters\", this button allows you to filter your list of books: \n * Filter adding special marker to your book \n      - Green (Finished the book) \n      - Yellow(Book you are reading at the moment) \n      - Red(Book you haven't started)  \n * Filter the books in order from A -> Z or Z -> A.\n - \"Exit\", this button closes the program and saves your data. \n - \"Close Your List\", this button closes the list of books you have.\n - \"Remove\", this button allows you to remove ( Delete ) book from the list.\n   (* Keep in mind you will see a warning when removing a book. *) \n\n -If there is any issues, bugs, errors reports or just want to suggest improvements\n feel free to send feedback: \n Email: ivorahnev15@gmail.com \n Discord: Ghostnooob123\n";
+	Info = "* The purpose of this program is to make it easier to save your own books in one big collection, \n where you can filter them : Sort, Mark, Remove.\n\n - \"Open Your List\", this button opens your list of books. \n - \"New Book\", this button allows you to add new book to your list. \n - \"Filters\", this button allows you to filter your list of books: \n * Filter - Add special marker to your book \n      - Green (Finished the book) \n      - Yellow (Book you are reading at the moment) \n      - Red (Book you haven't started)  \n * Filter - Sort the books in order from A -> Z or Z -> A.\n - \"Exit\", this button closes the program and saves your data. \n - \"Close Your List\", this button closes the list of books you have.\n - \"Remove\", this button allows you to remove ( Delete ) book from the list.\n   (* Keep in mind you will see a warning when removing a book. *) \n\n -If there is any issues, bugs, errors reports or just want to suggest improvements\n feel free to send feedback: \n Email: ivorahnev15@gmail.com \n Discord: Ghostnooob123\n";
 
 	this->UI_InfoPanel.setString(Info);
 	this->UI_InfoPanel.setPosition(sf::Vector2f(this->InfoPanel.getPosition().x + 4.0f, this->InfoPanel.getPosition().y + 25.0f));

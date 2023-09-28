@@ -70,6 +70,10 @@ private:
 
 	size_t typeSymbol;
 
+	//Delay between Close Library and Exit button due the reason they overlapping.
+	sf::Clock delayClock;
+	sf::Time delayDuration = sf::seconds(0.12f);
+
 	float scrollPosition;
 	float scrollIncrement;
 
