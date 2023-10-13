@@ -4,6 +4,7 @@ Is a simple library for your books where you can store them safely, filter , mar
 ## How to Use
 The program is safe to run but may occur a warning due the fact the program is not widely known.
 Find BLMS.exe and run it. To find it navigate to BLMS folder and there is gonna be a BLMS application to run.
+(Program is only compatible with Windows 10-11)
 
 ## Dependencies
 
